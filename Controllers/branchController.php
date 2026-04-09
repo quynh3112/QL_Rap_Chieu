@@ -7,7 +7,6 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
 
-    // ===================== GET =====================
     case "GET":
         $id = $_GET['id'] ?? null;
 
@@ -19,10 +18,7 @@ switch ($method) {
                 exit;
             }
 
-            echo json_encode([
-                "status" => true,
-                "data" => $result->fetch_assoc()
-            ]);
+            echo json_encode($result);
         } else {
             $result = $branch->findAll();
             $list = [];
@@ -30,15 +26,11 @@ switch ($method) {
             while ($row = $result->fetch_assoc()) {
                 $list[] = $row;
             }
+            echo json_encode($list);
 
-            echo json_encode([
-                "status" => true,
-                "data" => $list
-            ]);
         }
         break;
 
-    // ===================== POST =====================
     case "POST":
         $data = json_decode(file_get_contents("php://input"), true);
 
@@ -66,7 +58,6 @@ switch ($method) {
         ]);
         break;
 
-    // ===================== PUT =====================
     case "PUT":
         $data = json_decode(file_get_contents("php://input"), true);
 
@@ -88,7 +79,6 @@ switch ($method) {
 
         $current = $found->fetch_assoc();
 
-        // check trùng tên nếu đổi tên
         if ($tenBranch != $current['tenBranch']) {
             $check = $branch->check($tenBranch);
             if ($check->num_rows > 0) {
@@ -105,7 +95,6 @@ switch ($method) {
         ]);
         break;
 
-    // ===================== DELETE =====================
     case "DELETE":
         $data = json_decode(file_get_contents("php://input"), true);
         $id = $data['id'] ?? null;
