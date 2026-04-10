@@ -1,7 +1,7 @@
 <?php
     header("Content-Type: application/json");
 
-    $data = json_decode(file_get_contents("php://input", true));
+    $data = json_decode(file_get_contents("php://input"), true);
 
     include "../models/review.php";
 
@@ -97,16 +97,16 @@
             break;
 
         case "GET":
-            $reviewId = $data["reviewId"] ?? null;
+            $movieId = $data["movieId"] ?? null;
             $list = [];
-            $result = $review -> getall($reviewId);
+            $result = $review -> getall($movieId);
             
             if ($result && $result -> num_rows > 0) {
                 while ($row = $result -> fetch_assoc()) {
                     $list[] = [
                         "rating" => $row['rating'],
                         "comment" => $row['comment'],
-                        "review_date" => $row['review_date']
+                        "review_date" => $row['reviewDate']
                     ] ;    
                 }
                 echo json_encode ([

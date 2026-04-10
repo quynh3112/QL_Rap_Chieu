@@ -21,7 +21,8 @@
 
         // Kiểm tra quyền (Hỗ trợ cả một chuỗi hoặc một mảng các quyền)
         // Ví dụ: checkAuth(['admin', 'manager'])
-        if (!in_array($user['role'], (array)$allowedRoles)) {
+        $rolesArray = is_array($allowedRoles) ? $allowedRoles : [$allowedRoles];
+        if (!in_array($user['role'], $rolesArray)) {
             http_response_code(403);
             echo json_encode([
                 "status" => false,
