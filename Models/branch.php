@@ -54,5 +54,30 @@ class Branch {
         $sql = "DELETE FROM branch WHERE branchId = $id";
         return $conn->query($sql);
     }
+       public function city(){
+        global $conn;
+        return $conn->query("SELECT DISTINCT thanhPho from branch ");
+        
+    }
+    public function brandBycity($city){
+        global $conn;
+        return $conn->query("SELECT branchId,tenBranch FROM branch WHERE thanhPho='$city'");
+    }
+ public function movieByBranch($branch_id){
+    global $conn;
+
+  $sql = "SELECT DISTINCT m.movieId, m.tenPhim, m.thoiLuong, m.img
+        FROM movie m
+        JOIN schedule s ON s.movieId = m.movieId
+        JOIN room r ON r.roomId = s.roomId
+        JOIN branch b ON b.branchId = r.branchId
+        WHERE b.branchId = '$branch_id'
+        AND (
+            s.ngayChieu > CURDATE() 
+            OR (s.ngayChieu = CURDATE() AND s.gioChieu > CURTIME())
+        )
+        GROUP BY m.movieId";
+    return $conn->query($sql);
+}
 }
 ?>

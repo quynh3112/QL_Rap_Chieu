@@ -1,0 +1,28 @@
+/* tone màu */
+.food-body { background: #000; color: #fff; font-family: 'Arial'; }
+.admin-container { max-width: 1100px; margin: 40px auto; padding: 20px; }
+.cgv-title { border-left: 6px solid #e71a0f; padding-left: 15px; margin-bottom: 30px; font-size: 24px; }
+
+/* tab admin */
+.admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #333; }
+.tab-btn { background: none; border: none; color: #888; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+.tab-btn.active { color: #e71a0f; border-bottom: 3px solid #e71a0f; }
+
+/* bảng dữ liệu */
+.admin-food-table { width: 100%; border-collapse: collapse; background: #1a1a1a; margin-top: 10px; }
+.admin-food-table th { background: #333; color: #f5c518; padding: 15px; text-align: center; }
+.admin-food-table td { padding: 12px; border-bottom: 1px solid #222; text-align: center; }
+
+/*status tag*/
+.status-tag.green { color: #2ecc71; }
+.status-tag.red { color: #e74c3c; }
+
+/* modal */
+.cgv-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; }
+.modal-content { background: #222; padding: 30px; border-radius: 8px; width: 400px; border: 1px solid #444; }
+.form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
+.form-group input, .form-group select { padding: 8px; background: #000; border: 1px solid #444; color: #fff; }
+
+.btn-cgv-red { background: #e71a0f; color: #fff; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 4px; }
+.btn-edit { color: #3498db; background: none; border: none; cursor: pointer; }
+.btn-cancel { background: #444; color: #fff; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; }
