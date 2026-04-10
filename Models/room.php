@@ -4,11 +4,9 @@ include "../models/seat.php";
 
 class Room {
 
-    // THÊM PHÒNG + TẠO GHẾ TỰ ĐỘNG
   public function createRoom($tenPhong, $tongGhe, $loaiPhong, $branchId){
     global $conn;
 
-    // kiểm tra rỗng
     if(
         empty(trim($tenPhong)) ||
         empty(trim($tongGhe)) ||
@@ -21,8 +19,7 @@ class Room {
         ];
     }
 
-    // kiểm tra tên phòng trùng
-    $checkName = $conn->query("SELECT * FROM room WHERE tenPhong='$tenPhong'");
+    $checkName = $conn->query("SELECT * FROM room WHERE tenPhong='$tenPhong' and branchId='$branchId'");
     if($checkName->num_rows > 0){
         return [
             "success" => false,
@@ -30,16 +27,13 @@ class Room {
         ];
     }
 
-    // room_id tự động tăng => bỏ khỏi INSERT
     $sql = "INSERT INTO room(tenPhong, tongGhe, loaiPhong, branchId)
             VALUES ('$tenPhong', '$tongGhe', '$loaiPhong', '$branchId')";
 
     if($conn->query($sql)){
 
-        // lấy room_id vừa tạo
         $room_id = $conn->insert_id;
 
-        // tạo ghế theo room_id mới
         $seat = new Seat();
         $seat->createSeat($tongGhe, $room_id);
 
@@ -60,9 +54,9 @@ class Room {
         return $conn->query("SELECT * FROM room");
     }
 
-    public function getRoomById($room_id){
+    public function getRoomById($branchId){
         global $conn;
-        return $conn->query("SELECT * FROM room WHERE roomId='$room_id'");
+        return $conn->query("SELECT * FROM room WHERE branchId='$branchId'");
     }
 
     public function updateRoom($room_id, $tenPhong, $tongGhe, $loaiPhong, $branchId){
@@ -73,7 +67,7 @@ class Room {
                     tongGhe='$tongGhe',
                     loaiPhong='$loaiPhong',
                     branchId='$branchId'
-                WHERE room_id='$room_id'";
+                WHERE roomId='$room_id'";
 
         if($conn->query($sql)){
             $seat = new Seat();
@@ -94,5 +88,8 @@ class Room {
 
         return $conn->query("DELETE FROM room WHERE roomId='$room_id'");
     }
+    
+ 
+    
 }
 ?>

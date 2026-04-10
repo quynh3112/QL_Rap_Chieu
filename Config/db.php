@@ -1,7 +1,7 @@
 <?php
 $host="localhost";
 $name="root";
-$password="";
+$password="Quynh3112";
 $db="ql_rap";
 $conn=new mysqli($host,$name,$password,$db);
 if($conn->connect_error){
