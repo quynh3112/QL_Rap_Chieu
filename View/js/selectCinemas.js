@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
    async function loadCities() {
       try {
-         const res = await fetch('http://mncinema.test/Controllers/cityController.php');
+         const res = await fetch('../../Controllers/cityController.php');
          const data = await res.json();
 
          data.forEach(c => {
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
          branches.innerHTML = ""; 
 
          const res = await fetch(
-            `http://mncinema.test/Controllers/branchController.php?thanhPho=${encodeURIComponent(thanhpho)}`
+            `../../Controllers/branchController.php?thanhPho=${encodeURIComponent(thanhpho)}`
          );
 
          const data = await res.json();
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
    }
    async function  renderFilm(branchId) {
     try{
-        const res=await fetch(`http://mncinema.test/Controllers/branchController.php?branchId=${encodeURIComponent(branchId)}`)
+        const res=await fetch(`../../Controllers/branchController.php?branchId=${encodeURIComponent(branchId)}`)
         const data=await res.json()
         films.innerHTML='';
         data.forEach(f=>{

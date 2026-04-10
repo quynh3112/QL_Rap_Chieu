@@ -1,0 +1,57 @@
+.img img{
+    width: 50px;
+    height: 40px;
+    
+}
+.list{
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    margin-top: 0;
+    gap:200px
+  
+
+}
+header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    justify-items: center;
+    position: fixed;
+    width: 100vw;
+    background-color: blanchedalmond;
+    height: 55px;
+    top:0;
+    left: 0;
+}
+.container{
+    position: relative;
+}
+.dropdown{
+    display: none;
+    position: absolute;
+    flex-direction: column;
+    gap:3px;
+    background: grey;
+    padding: 3px;
+    width: 200px;
+    
+
+}
+.container:hover .dropdown{
+    display: flex;
+}
+.container p{
+    font-size: 20px;
+    font-weight: bold;
+
+}
+.dropdown a{
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+}
+.dropdown a:hover{
+    background-color: antiquewhite;
+    color: black;
+}

@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
    
     async function loadBranches() {
         try {
-            const res = await fetch("http://mncinema.test/Controllers/branchController.php");
+            const res = await fetch("../../Controllers/branchController.php");
             const branches = await res.json();
 
             selectBranch.innerHTML = `<option value="">-- Chọn chi nhánh --</option>`;
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     async function loadRooms(branchId = "") {
     try {
-        let url = "http://mncinema.test/Controllers/roomController.php";
+        let url = "../../Controllers/roomController.php";
 
         if (branchId) {
             url += `?branchId=${branchId}`;
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!confirm("Bạn có chắc muốn xóa?")) return;
 
                 try {
-                    const res = await fetch("http://mncinema.test/Controllers/roomController.php", {
+                    const res = await fetch("../../Controllers/roomController.php", {
                         method: "DELETE",
                         headers: {
                             "Content-Type": "application/json"
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("DATA:", data);
 
     try {
-        const res = await fetch("http://mncinema.test/Controllers/roomController.php", {
+        const res = await fetch("../../Controllers/roomController.php", {
             method: method,
             headers: {
                 "Content-Type": "application/json"

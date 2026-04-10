@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const res = await fetch("http://mncinema.test/Controllers/branchController.php", {
+            const res = await fetch("../../Controllers/branchController.php", {
                 method: method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(bodyData)
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm("Bạn có chắc muốn xóa chi nhánh này?")) return;
 
         try {
-            const res = await fetch("http://mncinema.test/Controllers/branchController.php", {
+            const res = await fetch("../../Controllers/branchController.php", {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id })
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadBranches() {
         try {
-            const res = await fetch("http://mncinema.test/Controllers/branchController.php");
+            const res = await fetch("../../Controllers/branchController.php");
             const data = await res.json();
 
             // Tạo tất cả row bằng innerHTML
