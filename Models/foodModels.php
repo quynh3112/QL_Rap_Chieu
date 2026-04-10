@@ -1,29 +1,30 @@
 <?php
 class Food {
     private $conn;
-    public function __construct($db) {
-        $this->conn = $db;
-    }
-    public function getActive() {
-        return $this->conn->query("SELECT * FROM Food WHERE trangThai = 'Còn hàng' ORDER BY loaiFood");
-    }
+    public function __construct($db) { $this->conn = $db; }
+
     public function getAll() {
-        return $this->conn->query("SELECT * FROM Food ORDER BY foodId DESC");
+        return $this->conn->query("SELECT * FROM food ORDER BY foodId DESC");
     }
-    public function getById($id) {
-        return $this->conn->query("SELECT * FROM Food WHERE foodId = $id")->fetch_assoc();  
-    }
+
     public function save($data) {
-        $ten = $data['tenFood']; $loai = $data['loaiFood']; $gia = $data['gia']; 
-        $ton = $data['soLuongTon']; $tt = $data['trangThai'];
-        if (isset($data['foodId'])) {
-            $id = $data['foodId'];
-            $sql = "UPDATE Food SET tenFood='$ten', loaiFood='$loai', gia=$gia, soLuongTon=$ton, trangThai='$tt' WHERE foodId=$id";
+        $ten = $this->conn->real_escape_string($data['tenFood']);
+        $loai = $this->conn->real_escape_string($data['loaiFood']);
+        $gia = (float)$data['gia'];
+        $ton = (int)$data['soLuongTon'];
+        $tt = $data['trangThai'] ?? 'Còn';
+
+        if (isset($data['foodId']) && !empty($data['foodId'])) {
+            $id = (int)$data['foodId'];
+            $sql = "UPDATE food SET tenFood='$ten', loaiFood='$loai', gia=$gia, soLuongTon=$ton, trangThai='$tt' WHERE foodId=$id";
+        } else {
+            $sql = "INSERT INTO food (tenFood, loaiFood, gia, soLuongTon, trangThai) VALUES ('$ten', '$loai', $gia, $ton, '$tt')";
         }
         return $this->conn->query($sql);
     }
     public function delete($id) {
-        return $this->conn->query("DELETE FROM Food WHERE foodId = $id");
-    }
+    $id = (int)$id;
+    return $this->conn->query("DELETE FROM food WHERE foodId = $id");
+}
 }
 ?>

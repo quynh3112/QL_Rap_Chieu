@@ -10,24 +10,26 @@ switch($method){
 
  
     case "GET":
+        
 
-        if(isset($_GET['room_id'])){
-            $result = $room->getRoomById($_GET['room_id']);
-            $data = $result->fetch_assoc();
-
-            if(!$data){
+        if(isset($_GET['branchId'])){
+            $result = $room->getRoomById($_GET['branchId']);
+            
+            if($result->num_rows==0){
                 echo json_encode([
                     "success" => false,
                     "message" => "Không tìm thấy phòng"
                 ]);
                 exit;
             }
+            $data=[];
+            while($row=$result->fetch_assoc()){
+                $data[]=$row;
 
-            echo json_encode([
-                "success" => true,
-                "data" => $data
-            ]);
-            exit;
+
+            }
+            echo json_encode($data);
+             exit;
         }
 
         $result = $room->getAllRooms();
@@ -37,10 +39,7 @@ switch($method){
             $data[] = $row;
         }
 
-        echo json_encode([
-            "success" => true,
-            "data" => $data
-        ]);
+        echo json_encode($data);
         exit;
 
 
@@ -62,15 +61,12 @@ switch($method){
 
 
 
-    // =========================
-    // PUT: Cập nhật phòng
-    // =========================
     case "PUT":
 
         $input = json_decode(file_get_contents("php://input"), true);
 
         $response = $room->updateRoom(
-            $input['room_id'] ?? '',
+            $input['roomId'] ?? '',
             $input['tenPhong'] ?? '',
             $input['tongGhe'] ?? '',
             $input['loaiPhong'] ?? '',
@@ -82,25 +78,23 @@ switch($method){
 
 
 
-    // =========================
-    // DELETE: Xóa phòng
-    // =========================
+    
     case "DELETE":
 
         $input = json_decode(file_get_contents("php://input"), true);
 
         $response = $room->deleteRoom(
-            $input['room_id'] ?? ''
+            $input['roomId'] ?? ''
         );
 
-        echo json_encode($response);
+        echo json_encode([
+            "status"=>$response,
+            "message"=>$response ? "Xóa thành công!" : "Xóa thất bại!"
+        ]);
         exit;
 
 
 
-    // =========================
-    // METHOD KHÔNG HỢP LỆ
-    // =========================
     default:
         echo json_encode([
             "success" => false,

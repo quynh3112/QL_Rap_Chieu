@@ -1,26 +1,33 @@
 <?php
 session_start();
-//checkAdminRole
+header('Content-Type: application/json'); 
 require_once '../Config/db.php';
 require_once '../models/foodModels.php';
-require_once '../models/foodOrder.php';
+
+if (!$conn) {
+    die(json_encode(['success' => false, 'message' => 'Lỗi kết nối database']));
+}
 
 $action = $_GET['action'] ?? '';
 $input = json_decode(file_get_contents('php://input'), true);
 $foodModel = new Food($conn);
-$orderModel = new FoodOrder($conn);
-header('Content-Type: application/json');
 
 switch ($action) {
     case 'list_all':
-        echo json_encode(['success' => true, 'data' => $foodModel->getAll()->fetch_all(MYSQLI_ASSOC)]);
+        $res = $foodModel->getAll();
+        echo json_encode(['success' => true, 'data' => $res->fetch_all(MYSQLI_ASSOC)]);
         break;
+
     case 'save':
-        $foodModel->save($input);
-        echo json_encode(['success' => true, 'message' => 'Lưu món ăn thành công']);
-        break;
-    case 'list_orders':
-        echo json_encode(['success' => true, 'data' => $orderModel->getAll()->fetch_all(MYSQLI_ASSOC)]);
+        if (!$input) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu gửi lên không đúng định dạng JSON']);
+            break;
+        }
+        if ($foodModel->save($input)) {
+            echo json_encode(['success' => true, 'message' => 'Lưu thành công!']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Lỗi SQL: ' . $conn->error]);
+        }
         break;
 }
 ?>
