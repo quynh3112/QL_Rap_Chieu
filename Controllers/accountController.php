@@ -44,15 +44,16 @@
             // Tách biệt xử lý Update dựa trên dữ liệu gửi lên
             if(!empty($data['password'])) {
                 // Nếu có password mới thì cập nhật mật khẩu
-                if($account->updatePassword($data['accountid'], $data['password'])) {
+                if($account->changePassword($data['accountId'], $data['password'])) {
                     echo json_encode([
                         "status" => true,
                         "message" => "Đổi mật khẩu thành công!"
                     ]);
                 }
             } else {
+                $branchId_SQL = empty($data['branchId']) ? "NULL" : (int)$data['branchId'];
                 // Cập nhật thông tin profile
-                if($account->updateProfile($data['accountid'], $data['hoTen'], $data['email'], $data['sdt'], $data['branchId'], $data['role'])) {
+                if($account->update($data['accountId'], $data['username'], $data['hoTen'], $data['email'], $data['sdt'], $branchId_SQL, $data['role'])) {
                     echo json_encode([
                         "status" => true,
                         "message" => "Cập nhật thông tin thành công!"
@@ -76,7 +77,7 @@
             break;
 
         case "GET":
-            $accountId = $_GET['accountId'] ?? null;
+            $accountId = $_GET['accountId'] ?? $data['accountId'] ?? null;
 
             if ($accountId) {
                 $result = $account->getById($accountId);
@@ -89,7 +90,8 @@
                     exit;
                 }
 
-                echo json_encode($result);
+                $row = $result->fetch_assoc();
+                echo json_encode($row);
             } else {
                 $result = $account->getAll();
                 $list = [];
