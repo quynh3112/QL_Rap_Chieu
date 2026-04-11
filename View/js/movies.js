@@ -39,6 +39,7 @@ function addMovie() {
     const daoDien = document.getElementById("daoDien").value.trim();
     const dienVien = document.getElementById("dienVien").value.trim();
     const nam = document.getElementById("nam").value.trim();
+    const img = document.getElementById("img").files[0];
     let ok = true;
     if (!tenPhim) {
         setError("errTenPhim", "Tên phim không được trống");
@@ -61,19 +62,21 @@ function addMovie() {
         ok = false;
     }
     if (!ok) return;
+    const formData = new FormData();
+    formData.append("tenPhim", tenPhim);
+    formData.append("thoiLuong", thoiLuong);
+    formData.append("moTa", document.getElementById("moTa").value);
+    formData.append("daoDien", daoDien);
+    formData.append("dienVien", dienVien);
+    formData.append("namSanXuat", nam);
+    formData.append("trangThai", document.getElementById("trangThai").value);
+
+    if (img) {
+    formData.append("img", img);
+    }
     fetch(API, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            tenPhim,
-            thoiLuong: parseInt(thoiLuong),
-            moTa: document.getElementById("moTa").value,
-            img: document.getElementById("img").value,
-            daoDien,
-            dienVien,
-            namSanXuat: parseInt(nam),
-            trangThai: document.getElementById("trangThai").value
-        })
+        body: formData
     })
         .then(() => {
             loadMovies();
@@ -100,13 +103,16 @@ function showEdit(id, tenPhim, thoiLuong, moTa, img, daoDien, dienVien, nam, tra
 }
 function updateMovie() {
     clearErrors("#editBox .error");
+
     const id = document.getElementById("editId").value;
     const tenPhim = document.getElementById("editTenPhim").value.trim();
     const thoiLuong = document.getElementById("editThoiLuong").value.trim();
     const daoDien = document.getElementById("editDaoDien").value.trim();
     const dienVien = document.getElementById("editDienVien").value.trim();
     const nam = document.getElementById("editNam").value.trim();
+
     let ok = true;
+
     if (!tenPhim) {
         setError("errEditTenPhim", "Tên phim không được trống");
         ok = false;
@@ -128,24 +134,32 @@ function updateMovie() {
         ok = false;
     }
     if (!ok) return;
+    const formData = new FormData();
+    formData.append("tenPhim", tenPhim);
+    formData.append("thoiLuong", thoiLuong);
+    formData.append("moTa", document.getElementById("editMoTa").value);
+    formData.append("daoDien", daoDien);
+    formData.append("dienVien", dienVien);
+    formData.append("namSanXuat", nam);
+    formData.append("trangThai", document.getElementById("editTrangThai").value);
+
+    const newImg = document.getElementById("editImgFile")?.files[0];
+    const oldImg = document.getElementById("editImg").value;
+
+    if (newImg) {
+        formData.append("img", newImg); 
+    } else {
+        formData.append("oldImg", oldImg); 
+    }
+
     fetch(API + "?id=" + id, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            tenPhim,
-            thoiLuong: parseInt(thoiLuong),
-            moTa: document.getElementById("editMoTa").value,
-            img: document.getElementById("editImg").value,
-            daoDien,
-            dienVien,
-            namSanXuat: parseInt(nam),
-            trangThai: document.getElementById("editTrangThai").value
-        })
+        method: "POST", 
+        body: formData
     })
-        .then(() => {
-            loadMovies();
-            cancelEdit();
-        });
+    .then(() => {
+        loadMovies();
+        cancelEdit();
+    });
 }
 function cancelEdit() {
     document.getElementById("editBox").style.display = "none";
