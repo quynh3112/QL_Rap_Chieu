@@ -4,9 +4,15 @@
         <title>Site</title>
         <meta charset="UTF-8"/>
         <link rel="stylesheet" href="../css/selectCinemas.css">
+        <link rel="stylesheet" href="../css/header.css">
+
     </head>
     <body>
-        <div>
+         <?php
+            include "../component/header.php"
+            ?>
+        <div style="margin-top:70px">
+           
             <div>
                 <div id="city">
                     <h1>CGV CINEMAS</h1>

@@ -1,4 +1,5 @@
 <?php
+    session_start();
     include "../models/account.php";
     header("Content-Type: application/json");
 
@@ -13,6 +14,9 @@
             if($data['action'] == 'login') {
                 $user = $account->login($data['email'], $data['password']);
                 if($user) {
+                    unset($user['password']);
+                    $_SESSION['user'] = $user;
+
                     echo json_encode([
                         "status" => true,
                         "message" => "Đăng nhập thành công!", 

@@ -10,11 +10,12 @@ switch($method){
             $data = $movie->getById($_GET['id']);
             echo json_encode($data);
         } 
-        elseif(isset($_GET['name']) || isset($_GET['category']) || isset($_GET['year'])){
+        elseif(isset($_GET['name']) || isset($_GET['category']) || isset($_GET['year']) || isset($_GET['status'])){
             $result = $movie->search(
                 $_GET['name'] ?? null,
                 $_GET['category'] ?? null,
-                $_GET['year'] ?? null
+                $_GET['year'] ?? null,
+                $_GET['status'] ?? null
             );
             $data = [];
             while($row = $result->fetch_assoc()){
@@ -32,13 +33,31 @@ switch($method){
         }
     break;
     case 'POST':
-        $input = json_decode(file_get_contents("php://input"), true);
-        if($movie->create($input)){
-            echo json_encode(["message" => "Thêm phim thành công"]);
+    $uploadDir = "../uploads/";
+
+    $imgName = $_POST['oldImg'] ?? null;
+
+    if (!empty($_FILES['img']['name'])) {
+        $imgName = time() . "_" . basename($_FILES["img"]["name"]);
+        move_uploaded_file($_FILES["img"]["tmp_name"], $uploadDir . $imgName);
+    }
+
+    $data = $_POST;
+    $data['img'] = $imgName;
+if (isset($_GET['id'])) {
+        if ($movie->update($_GET['id'], $data)) {
+            echo json_encode(["message" => "Cập nhật thành công"]);
         } else {
             echo json_encode(["message" => "Lỗi"]);
         }
-    break;
+    } else {
+    if ($movie->create($data)) {
+        echo json_encode(["message" => "Thêm phim thành công"]);
+    } else {
+        echo json_encode(["message" => "Lỗi"]);
+    }
+    }
+break;
     case 'PUT':
         $input = json_decode(file_get_contents("php://input"), true);
         $id = $_GET['id'] ?? null;
