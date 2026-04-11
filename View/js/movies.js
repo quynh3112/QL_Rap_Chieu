@@ -1,4 +1,4 @@
-const API = "http://localhost:8080/QL_Rap_Chieu/Controllers/movies.php";
+const API = "../../QL_Rap_Chieu/Controllers/movies.php";
 function setError(id, msg) {
     const el = document.getElementById(id);
     if (el) el.innerText = msg;

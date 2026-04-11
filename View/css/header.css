@@ -23,6 +23,7 @@ header{
     height: 55px;
     top:0;
     left: 0;
+    margin-bottom: 60px;
 }
 .container{
     position: relative;
@@ -54,4 +55,14 @@ header{
 .dropdown a:hover{
     background-color: antiquewhite;
     color: black;
+}
+.container button{
+    font-size: 20px;
+    background-color: #EB4638;
+    border: none;
+    margin-top: 15px;
+    color: white;
+    padding: 3px;
+    border-radius: 5px;
+    font-family: 'Times New Roman', Times, serif;
 }

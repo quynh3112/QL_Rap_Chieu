@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     if (user.role === "Customer") {
                         // Chuyển đến trang chủ rạp phim cho khách hàng
-                        window.location.href = "index.php"; 
+                        window.location.href = "home.php"; 
                     } else if (["Admin", "Manager", "Employee"].includes(user.role)) {
                         // Chuyển đến trang quản lý cho các vai trò nhân sự
                         window.location.href = "../admin/dashboard.php";
