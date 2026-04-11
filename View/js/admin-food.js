@@ -109,20 +109,39 @@ function editFood(index) {
 }
 
 async function saveFood() {
-    const res = await fetch('/QL_Rap_Chieu/Controllers/foodController.php?action=save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-    const result = await res.json();
-    
-    if (result.success) { 
-        alert("Thành công!"); 
-        closeModal(); 
-        loadAdminData(); 
-    } else {
-        // nếu không phải ad or man sẽ trae về
-        alert("KHÔNG THỂ LƯU: " + (result.message || "Lỗi phân quyền"));
+    // 1. Phải khai báo biến 'data' trước khi dùng
+    const data = {
+        foodId: document.getElementById('input-foodId').value,
+        tenFood: document.getElementById('input-tenFood').value,
+        loaiFood: document.getElementById('input-loaiFood').value,
+        gia: document.getElementById('input-gia').value,
+        soLuongTon: document.getElementById('input-soLuongTon').value
+    };
+
+    // Kiểm tra nhanh xem đã nhập tên và giá chưa
+    if (!data.tenFood || !data.gia) {
+        return alert("Mày chưa nhập đủ tên món và giá kìa!");
+    }
+
+    try {
+        // 2. Bây giờ mới dùng biến 'data' ở đây
+        const res = await fetch('/QL_Rap_Chieu/Controllers/foodController.php?action=save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data) 
+        });
+
+        const result = await res.json();
+        if (result.success) {
+            alert("Thành công rồi nhé!");
+            closeModal();
+            loadAdminData(); 
+        } else {
+            alert("Lỗi từ server: " + result.message);
+        }
+    } catch (e) {
+        console.error("Lỗi fetch:", e);
+        alert("Có lỗi xảy ra khi kết nối server!");
     }
 }
 

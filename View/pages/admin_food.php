@@ -1,18 +1,11 @@
 <?php
-$currentDir = __DIR__;
-$controllersDir = realpath(__DIR__ . '/../../Controllers');
-
-if ($controllersDir) {
-    chdir($controllersDir); // Nhảy vào Controllers để file auth.php không bị lỗi include
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
-session_start();
 
-require_once __DIR__ . '/../../Controllers/auth.php';
+require_once '../../Controllers/auth.php';
 
-// Chỉ cho Admin / Manager / Employee vào
-if (function_exists('checkAuth')) {
-    checkAuth(['Admin', 'Manager', 'Employee']);
-}
+checkAuth(['Admin', 'Manager', 'Employee']);
 ?>
 <!DOCTYPE html>
 <html lang="vi">
