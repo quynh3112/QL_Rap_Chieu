@@ -9,10 +9,12 @@
                 $role = "customer";
             }
 
+            $branchId_SQL = empty($branchId) ? "NULL" : (int)$branchId;
+
             $hash = password_hash($password, PASSWORD_DEFAULT);
 
             $sql = "INSERT INTO account (username, password, hoTen, email, sdt, role, branchId, ngayDangKy)
-                    VALUES ('$username', '$hash', '$hoTen', '$email', '$sdt', '$role', $branchId, '$ngayDangKy')";
+                    VALUES ('$username', '$hash', '$hoTen', '$email', '$sdt', '$role', $branchId_SQL, '$ngayDangKy')";
 
             return $conn->query($sql);
         }
