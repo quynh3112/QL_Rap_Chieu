@@ -2,7 +2,7 @@ let listFoodGlobal = [];
 //1. load dsach 
 async function loadAdminData() {
     try {
-        const res = await fetch('/QL_Rap_Chieu/Controllers/foodController.php?action=list_all');
+        const res = await fetch('../../Controllers/foodController.php?action=list_all');
         const json = await res.json();
         if (json.success) {
             listFoodGlobal = json.data;
@@ -29,7 +29,7 @@ async function loadAdminData() {
 //2. load danh sách đơn hàng
 async function loadOrders() {
     try {
-        const res = await fetch('/QL_Rap_Chieu/Controllers/foodController.php?action=list_orders');
+        const res = await fetch('../../Controllers/foodController.php?action=list_orders');
         const json = await res.json();
         const container = document.getElementById('order-table-container');
         

@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>header</title>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="../css/header.css">
-    </head>
-    <body>
-        <header>
+
+<header>
     <div class="img">
         <img src="../asset/cgv.png" alt="">
     </div>
@@ -36,5 +29,3 @@
     </div>
 </header>
         
-    </body>
-</html>
