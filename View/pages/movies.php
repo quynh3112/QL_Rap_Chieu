@@ -23,7 +23,9 @@
             </div>
             <div class="form-row">
                 <input id="moTa" placeholder="Mô tả">
-                <input id="img" placeholder="Ảnh">
+                <label class="file-box" id="fileLabel">
+        <input type="file" id="img" accept="image/*">
+    </label>
                 <input id="daoDien" placeholder="Đạo diễn">
                 <div class="error" id="errDaoDien"></div>
             </div>
@@ -57,7 +59,8 @@
             </div>
             <div class="form-row">
                 <input id="editMoTa" placeholder="Mô tả">
-                <input id="editImg" placeholder="Ảnh">
+                <input type="file" id="editImgFile">
+                <input type="hidden" id="editImg">
                 <input id="editDaoDien" placeholder="Đạo diễn">
                 <div class="error" id="errEditDaoDien"></div>
             </div>
