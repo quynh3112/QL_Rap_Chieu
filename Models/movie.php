@@ -5,7 +5,7 @@ class Movie {
         $this->conn = $db;
     }
     public function getAll(){
-        $sql = "SELECT * FROM Movie ORDER BY movieId DESC";
+        $sql = "SELECT * FROM Movie ORDER BY movieId ASC";
         return $this->conn->query($sql);
     }
     public function getById($id){
@@ -59,7 +59,7 @@ class Movie {
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
-    public function search($name = null, $category = null, $year = null){
+    public function search($name = null, $category = null, $year = null,$status = null){
         $sql = "SELECT DISTINCT m.*
                 FROM Movie m
                 LEFT JOIN MovieCategory mc ON m.movieId = mc.movieId
@@ -72,6 +72,9 @@ class Movie {
         }
         if($year){
             $sql .= " AND m.namSanXuat = $year";
+        }
+        if($status){
+        $sql .= " AND m.trangThai = '$status'";
         }
         return $this->conn->query($sql);
     }

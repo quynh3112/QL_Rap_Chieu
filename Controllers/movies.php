@@ -10,11 +10,12 @@ switch($method){
             $data = $movie->getById($_GET['id']);
             echo json_encode($data);
         } 
-        elseif(isset($_GET['name']) || isset($_GET['category']) || isset($_GET['year'])){
+        elseif(isset($_GET['name']) || isset($_GET['category']) || isset($_GET['year']) || isset($_GET['status'])){
             $result = $movie->search(
                 $_GET['name'] ?? null,
                 $_GET['category'] ?? null,
-                $_GET['year'] ?? null
+                $_GET['year'] ?? null,
+                $_GET['status'] ?? null
             );
             $data = [];
             while($row = $result->fetch_assoc()){
