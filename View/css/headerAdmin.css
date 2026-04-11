@@ -1,0 +1,117 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #111;
+    padding: 10px 20px;
+}
+
+.logo img {
+    height: 50px;
+}
+
+.bar h2 {
+    color: white;
+    cursor: pointer;
+    font-size: 22px;
+}
+
+.items {
+    position: fixed;
+    top: 0;
+    left: -270px;
+    width: 260px;
+    height: 100%;
+    background: #1a1a1a;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    transition: 0.3s ease;
+    z-index: 1000;
+}
+
+.items.active {
+    left: 0;
+}
+
+.items p {
+    text-align: right;
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+}
+
+.items p:hover {
+    color: #e71a0f;
+}
+
+.items a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+
+    transition: 0.2s;
+}
+
+.items a:hover {
+    background: #f5c518;
+    color: #111;
+}
+
+.account button {
+    background: #e71a0f;
+    border: none;
+    padding: 8px 12px;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.account .container {
+    position: relative;
+}
+
+.account .dropdown {
+    position: absolute;
+    top: 120%;
+    right: 0;
+    background: #222;
+    border-radius: 6px;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: 0.25s;
+}
+
+.account .container:hover .dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.account .dropdown a {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.account .dropdown a:hover {
+    background: #e71a0f;
+}

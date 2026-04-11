@@ -1,68 +1,103 @@
-.img img{
-    width: 50px;
-    height: 40px;
-    
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-.list{
-    list-style: none;
-    display: flex;
-    flex-direction: row;
-    margin-top: 0;
-    gap:200px
-  
 
-}
-header{
+header {
     display: flex;
-    flex-direction: row;
+    align-items: center;
     justify-content: space-between;
-    justify-items: center;
-    position: fixed;
-    width: 100vw;
-    background-color: blanchedalmond;
-    height: 55px;
-    top:0;
-    left: 0;
-    margin-bottom: 60px;
+    background: #111;
+    padding: 10px 40px;
 }
-.container{
+
+.img img {
+    height: 50px;
+}
+
+.list {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+}
+
+.container {
+    position: relative;
+    cursor: pointer;
+    padding-bottom: 15px; 
+}
+
+.container h2 {
+    color: white;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.container:hover h2 {
+    color: red;
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #222;
+    border-radius: 8px;
+    min-width: 200px;
+    overflow: hidden;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+
+    transition: all 0.25s ease;
+    transition-delay: 0.1s;
+}
+
+.container:hover .dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.dropdown a {
+    display: flex;
+    gap: 10px;
+    padding: 12px;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.dropdown a:hover {
+    background: red;
+}
+
+.account button {
+    background: red;
+    border: none;
+    padding: 10px 15px;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* dropdown account */
+.account .container {
     position: relative;
 }
-.dropdown{
-    display: none;
-    position: absolute;
-    flex-direction: column;
-    gap:3px;
-    background: grey;
-    padding: 3px;
-    width: 200px;
-    
 
+.account .dropdown {
+    right: 0;
+    left: auto;
 }
-.container:hover .dropdown{
-    display: flex;
-}
-.container p{
-    font-size: 20px;
-    font-weight: bold;
 
-}
-.dropdown a{
-    text-decoration: none;
-    color: white;
-    font-size: 20px;
-}
-.dropdown a:hover{
-    background-color: antiquewhite;
-    color: black;
-}
-.container button{
-    font-size: 20px;
-    background-color: #EB4638;
-    border: none;
-    margin-top: 15px;
-    color: white;
-    padding: 3px;
-    border-radius: 5px;
-    font-family: 'Times New Roman', Times, serif;
+/* ICON */
+i {
+    font-size: 14px;
 }

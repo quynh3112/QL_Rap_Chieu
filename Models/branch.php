@@ -79,5 +79,27 @@ class Branch {
         GROUP BY m.movieId";
     return $conn->query($sql);
 }
+public function movieByRoomVip($branchId){
+    global $conn;
+    return $conn->query("
+        SELECT DISTINCT  m.movieId, m.tenPhim, m.thoiLuong,m.img
+        FROM movie m 
+        JOIN schedule s ON m.movieId = s.movieId
+        JOIN room r ON r.roomId = s.roomId 
+        JOIN branch b ON b.branchId = r.branchId
+        WHERE b.branchId = '$branchId'
+        AND (
+            s.ngayChieu > CURDATE() 
+            OR (s.ngayChieu = CURDATE() AND s.gioChieu > CURTIME())
+        )
+        AND r.loaiPhong = 'VIP'
+    ");
+}
+public function chiNhanhVip(){
+    global $conn;
+    return $conn->query("SELECT DISTINCT b.tenBranch,b.branchId FROM
+    branch b Join room r on r.branchId=b.branchId 
+    Where r.loaiPhong='VIP' ");
+}
 }
 ?>
