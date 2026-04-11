@@ -1,6 +1,6 @@
 <?php
     // Xử lý xác thực và phân quyền
-    include "../config/db.php";
+    include_once __DIR__ . "/../config/db.php";
 
     function checkAuth($allowedRoles) {
         if (session_status() === PHP_SESSION_NONE) {
