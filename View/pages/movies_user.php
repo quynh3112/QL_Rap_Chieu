@@ -1,10 +1,11 @@
-<?php include "../component/header.php"; ?>
 
 <h2 class="title">🎬 Danh sách phim</h2>
 
 <div id="movieList" class="movie-list"></div>
 
 <style>
+    
+
 body {
     background: linear-gradient(120deg, #1f1c2c, #928dab);
     font-family: Arial;
@@ -76,7 +77,7 @@ body {
 </style>
 
 <script>
-const API = "http://localhost:8080/QL_Rap_Chieu/Controllers/movies.php";
+const API = "../../QL_Rap_Chieu/Controllers/movies.php";
 
 function getStatusClass(status){
     if(status === "Sắp chiếu") return "sap";

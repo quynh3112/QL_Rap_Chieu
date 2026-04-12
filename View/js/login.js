@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.location.href = "home.php"; 
                     } else if (["Admin", "Manager", "Employee"].includes(user.role)) {
                         // Chuyển đến trang quản lý cho các vai trò nhân sự
-                        window.location.href = "../admin/dashboard.php";
+                        window.location.href = "homeQL.php";
                     }
                 }, 1000); // Đợi 1 giây để người dùng kịp thấy thông báo thành công
 

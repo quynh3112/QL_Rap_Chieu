@@ -12,6 +12,8 @@ switch ($method) {
 
         $id = $_GET['id'] ?? null;
         $city=$_GET['thanhPho']??null;
+        $vip=$_GET['vip']??null;
+
         $branchId=$_GET['branchId']?? null;
 
         if($id){
@@ -60,6 +62,23 @@ switch ($method) {
         
 
         
+        }
+        if($vip){
+            $result=$branch->movieByRoomVip($vip);
+            if($result->num_rows==0){
+                echo json_encode([
+                    "status"=>false,
+                    "message"=>"Không có bộ phim nào đang chiếu ở chi nhánh này"
+                ]);
+                exit;
+            }
+                $data=[];
+            while($row=$result->fetch_assoc()){
+                $data[]=$row;
+
+            }
+            echo json_encode($data);
+            exit;
         }
 
 

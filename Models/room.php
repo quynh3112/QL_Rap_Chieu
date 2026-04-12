@@ -88,8 +88,10 @@ class Room {
 
         return $conn->query("DELETE FROM room WHERE roomId='$room_id'");
     }
+   
+}
     
  
     
-}
+
 ?>

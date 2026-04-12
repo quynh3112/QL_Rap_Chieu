@@ -9,6 +9,9 @@
         <?php
         include "../component/header.php";
         ?>
-       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae illo numquam fuga dolorum? Ipsa iste officiis architecto earum cum possimus nesciunt. Fugit quaerat reiciendis nostrum. Minima quae obcaecati maxime eum!</p>
+        <div style="margin-top:60px">
+            <?= include "movies_user.php";?>
+
+        </div>
     </body>
 </html>

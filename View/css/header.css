@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
     margin-top: 70px;
     font-family: Arial;
@@ -90,4 +91,108 @@ button:hover {
 .error {
     color: red;
     font-size: 12px;
+=======
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #111;
+    padding: 10px 40px;
+}
+
+.img img {
+    height: 50px;
+}
+
+.list {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+}
+
+.container {
+    position: relative;
+    cursor: pointer;
+    padding-bottom: 15px; 
+}
+
+.container h2 {
+    color: white;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.container:hover h2 {
+    color: red;
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #222;
+    border-radius: 8px;
+    min-width: 200px;
+    overflow: hidden;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+
+    transition: all 0.25s ease;
+    transition-delay: 0.1s;
+}
+
+.container:hover .dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.dropdown a {
+    display: flex;
+    gap: 10px;
+    padding: 12px;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.dropdown a:hover {
+    background: red;
+}
+
+.account button {
+    background: red;
+    border: none;
+    padding: 10px 15px;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* dropdown account */
+.account .container {
+    position: relative;
+}
+
+.account .dropdown {
+    right: 0;
+    left: auto;
+}
+
+/* ICON */
+i {
+    font-size: 14px;
+>>>>>>> dfb3674a5fedaadaf566c41cc3d9de9729b43584
 }
