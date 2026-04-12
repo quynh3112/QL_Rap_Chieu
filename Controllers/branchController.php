@@ -33,7 +33,7 @@ switch ($method) {
             $result = $branch->movieByBranch($branchId);
 
             if ($result->num_rows <= 0) {
-                echo json_encode(["status" => false, "message" => "Không tìm thấy chi nhánh"]);
+                echo json_encode(["status" => false, "message" => "Hiện tại chưa có bộ phim nào chiếu ở rạp này!"]);
                 exit;
             }
 
