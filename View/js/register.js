@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ngăn chặn form tự động load lại trang
         e.preventDefault();
 
-        // 1. Lấy dữ liệu từ các ô input
+        // Lấy dữ liệu từ các ô input
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value.trim();
         const hoTen = document.getElementById('hoTen').value.trim();
@@ -15,9 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const role = document.getElementById('role').value;
         const branchId = document.getElementById('branchId').value;
 
-        // 2. Đóng gói dữ liệu thành JSON
+        // Đóng gói dữ liệu thành JSON
         const bodyData = {
-            action: 'register', // Để phân biệt với login ở Controller
+            action: 'create',
             username: username,
             password: password,
             hoTen: hoTen,
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            // 3. Gọi API (Lưu ý sửa lại đường dẫn cho đúng với project của bạn)
+            // Gọi API
             const res = await fetch("../../Controllers/accountController.php", {
                 method: "POST",
                 headers: {
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const result = await res.json();
 
-            // 4. Xử lý hiển thị thông báo
+            // Xử lý hiển thị thông báo
             if (result.status === true) {
                 messageDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
                 registerForm.reset(); // Xóa trắng form sau khi thành công

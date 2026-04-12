@@ -28,8 +28,15 @@
                         "message" => "Sai email hoặc mật khẩu."
                     ]);
                 }
-            } else {
-                // Mặc định là Đăng ký (Create)
+            } else if($data['action'] == 'create') {
+                if($account->isUsernameExists($data['username'])) {
+                    echo json_encode([
+                        "status" => false,
+                        "message" => "Tên đăng nhập đã có người sử dụng, vui lòng sử dụng tên khác."
+                    ]);
+                    exit;
+                }
+
                 if($account->create($data['username'], $data['password'], $data['hoTen'], $data['email'], $data['sdt'], $data['role'], $data['branchId'], date('Y-m-d H:i:s'))) {
                     echo json_encode([
                         "status" => true,
