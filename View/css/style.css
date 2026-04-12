@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* ===== CGV STYLE - BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -27,3 +28,102 @@ tr:hover td { background: #111; }
 h2 { font-size: 20px; border-left: 4px solid var(--red); padding-left: 12px; margin-bottom: 16px; }
 h3 { font-size: 16px; margin-bottom: 14px; color: #ccc; }
 .hidden { display: none !important; }
+=======
+.container {
+    padding: 20px;
+}
+
+/* SEARCH */
+.search-box {
+    margin-bottom: 15px;
+}
+
+.search-box input {
+    padding: 8px;
+    width: 250px;
+}
+
+.search-box button {
+    padding: 8px 12px;
+}
+
+/* FORM + EDIT NGANG NHAU */
+.form-area {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+/* BOX */
+.box {
+    flex: 1;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+/* INPUT ROW */
+.form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.form-row input,
+.form-row select {
+    padding: 8px;
+    flex: 1;
+    min-width: 120px;
+}
+
+/* TABLE */
+.table-area {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+.error-input {
+    border: 2px solid red;
+    background: #ffe6e6;
+}
+.error {
+    color: red;
+    font-size: 13px;
+    min-height: 16px;
+}
+.file-box {
+    flex: 1;
+    min-width: 120px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    text-align: left;
+    position: relative;
+     display: flex;           
+    align-items: center;
+}
+
+/* Ẩn input thật */
+.file-box input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+>>>>>>> dev-food

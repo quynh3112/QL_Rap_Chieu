@@ -11,16 +11,22 @@ document.addEventListener("DOMContentLoaded", () => {
          data.forEach(c => {
             const city = document.createElement('p');
             city.textContent = c.thanhPho;
+<<<<<<< HEAD
             city.className="tp"
+=======
+>>>>>>> dev-food
 
             city.style.cursor = "pointer";
 
             city.onclick = () => {
+<<<<<<< HEAD
                document.querySelectorAll('.tp').forEach(i => {
                   i.classList.remove('active')
                })
                city.classList.add('active')
 
+=======
+>>>>>>> dev-food
                loadBranches(c.thanhPho);
             };
 
@@ -34,7 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
    async function loadBranches(thanhpho) {
       try {
+<<<<<<< HEAD
          branches.innerHTML = "<h1>Rạp</h1>"; 
+=======
+         branches.innerHTML = ""; 
+>>>>>>> dev-food
 
          const res = await fetch(
             `../../Controllers/branchController.php?thanhPho=${encodeURIComponent(thanhpho)}`
@@ -45,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
          data.forEach(b => {
             const branch = document.createElement('p');
             branch.textContent = b.tenBranch;
+<<<<<<< HEAD
             branch.className="chiNhanh"
 
             branch.style.cursor = "pointer";
@@ -53,6 +64,11 @@ document.addEventListener("DOMContentLoaded", () => {
                   i.classList.remove('active')
                })
                branch.classList.add('active')
+=======
+
+            branch.style.cursor = "pointer";
+            branch.onclick=()=>{
+>>>>>>> dev-food
                 renderFilm(b.branchId)
             }
 
@@ -69,11 +85,15 @@ document.addEventListener("DOMContentLoaded", () => {
     try{
         const res=await fetch(`../../Controllers/branchController.php?branchId=${encodeURIComponent(branchId)}`)
         const data=await res.json()
+<<<<<<< HEAD
         films.innerHTML="";
         if (!Array.isArray(data)) {
               alert(data.message)
                 return;
             }
+=======
+        films.innerHTML='';
+>>>>>>> dev-food
         data.forEach(f=>{
             const item=document.createElement('div')
             item.className='item'

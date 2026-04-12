@@ -89,7 +89,11 @@ body {
 <a href="movies_user.php" class="back-btn">← Quay lại</a>
 
 <script>
+<<<<<<< HEAD
 const API = "../../Controllers/movies.php";
+=======
+const API = "http://localhost:8080/QL_Rap_Chieu/Controllers/movies.php";
+>>>>>>> dev-food
 
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");

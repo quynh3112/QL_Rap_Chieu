@@ -77,7 +77,11 @@ body {
 </style>
 
 <script>
+<<<<<<< HEAD
 const API = "../../Controllers/movies.php";
+=======
+const API = "../../QL_Rap_Chieu/Controllers/movies.php";
+>>>>>>> dev-food
 
 function getStatusClass(status){
     if(status === "Sắp chiếu") return "sap";
