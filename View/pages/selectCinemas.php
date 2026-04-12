@@ -14,6 +14,7 @@
         <div style="margin-top:70px" class="">
            
             <div class="select" >
+
                 <div id="city">
                     <h1>CGV CINEMAS</h1>
                     <div class="line"></div>
@@ -26,6 +27,7 @@
                
                 <div id="items" class="films">
                   
+
                    
                 </div>
             

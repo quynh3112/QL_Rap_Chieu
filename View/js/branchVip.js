@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
             movies.innerHTML = "";
 
             if (!Array.isArray(data)) {
-                alert(data.message || "Không có dữ liệu");
+              alert( data.message || "Không có dữ liệu")
                 return;
             }
 

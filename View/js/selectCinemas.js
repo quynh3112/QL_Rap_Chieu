@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
             city.textContent = c.thanhPho;
             city.className="tp"
 
+
             city.style.cursor = "pointer";
 
             city.onclick = () => {
@@ -53,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   i.classList.remove('active')
                })
                branch.classList.add('active')
+
                 renderFilm(b.branchId)
             }
 
@@ -74,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
               alert(data.message)
                 return;
             }
+
         data.forEach(f=>{
             const item=document.createElement('div')
             item.className='item'
