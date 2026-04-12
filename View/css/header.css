@@ -1,68 +1,93 @@
-.img img{
-    width: 50px;
-    height: 40px;
-    
+body {
+    margin-top: 70px;
+    font-family: Arial;
 }
-.list{
-    list-style: none;
-    display: flex;
-    flex-direction: row;
-    margin-top: 0;
-    gap:200px
-  
 
-}
-header{
+/* SEARCH */
+.search-box {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    justify-items: center;
-    position: fixed;
-    width: 100vw;
-    background-color: blanchedalmond;
-    height: 55px;
-    top:0;
-    left: 0;
-    margin-bottom: 60px;
+    gap: 10px;
+    margin-bottom: 20px;
 }
-.container{
-    position: relative;
+
+.search-box input,
+.search-box select {
+    padding: 6px;
 }
-.dropdown{
-    display: none;
-    position: absolute;
+
+/* FORM */
+.form-area {
+    display: flex;
+    gap: 40px;
+}
+
+.box {
+    width: 300px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.form-row {
+    display: flex;
     flex-direction: column;
-    gap:3px;
-    background: grey;
-    padding: 3px;
-    width: 200px;
-    
+    margin-bottom: 10px;
+}
 
+.form-row input,
+.form-row select {
+    padding: 6px;
 }
-.container:hover .dropdown{
-    display: flex;
-}
-.container p{
-    font-size: 20px;
-    font-weight: bold;
 
-}
-.dropdown a{
-    text-decoration: none;
-    color: white;
-    font-size: 20px;
-}
-.dropdown a:hover{
-    background-color: antiquewhite;
-    color: black;
-}
-.container button{
-    font-size: 20px;
-    background-color: #EB4638;
+button {
+    padding: 6px 10px;
+    margin-top: 5px;
+    cursor: pointer;
     border: none;
-    margin-top: 15px;
+    background: #007bff;
     color: white;
-    padding: 3px;
     border-radius: 5px;
-    font-family: 'Times New Roman', Times, serif;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+/* TABLE */
+.table-area {
+    margin-top: 30px;
+    overflow-x: auto;
+}
+
+.table-area table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-area th,
+.table-area td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+.table-area th {
+    background-color: #f2f2f2;
+}
+
+.table-area tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+/* IMAGE */
+.table-area img {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+}
+
+/* ERROR */
+.error {
+    color: red;
+    font-size: 12px;
 }

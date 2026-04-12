@@ -1,4 +1,4 @@
-const API = "../../QL_Rap_Chieu/Controllers/movies.php";
+const API = "/QL_Rap_Chieu/Controllers/movies.php";
 function setError(id, msg) {
     const el = document.getElementById(id);
     if (el) el.innerText = msg;
@@ -24,7 +24,7 @@ function loadMovies() {
                     <td>${m.namSanXuat}</td>
                     <td>${m.trangThai}</td>
                     <td>
-                        <button onclick='showEdit(${m.movieId}, ${JSON.stringify(m.tenPhim)}, ${m.thoiLuong}, ${JSON.stringify(m.moTa ?? "")}, ${JSON.stringify(m.img ?? "")}, ${JSON.stringify(m.daoDien ?? "")}, ${JSON.stringify(m.dienVien ?? "")}, ${m.namSanXuat}, ${JSON.stringify(m.trangThai)})'>Sửa</button>
+                        <button onclick="editMovie(${m.movieId})">Sửa</button>
                         <button onclick="deleteMovie(${m.movieId})">Xóa</button>
                     </td>
                 </tr>`;
@@ -89,17 +89,22 @@ function deleteMovie(id) {
             .then(() => loadMovies());
     }
 }
-function showEdit(id, tenPhim, thoiLuong, moTa, img, daoDien, dienVien, nam, trangThai) {
-    document.getElementById("editBox").style.display = "block";
-    document.getElementById("editId").value = id;
-    document.getElementById("editTenPhim").value = tenPhim || "";
-    document.getElementById("editThoiLuong").value = thoiLuong || "";
-    document.getElementById("editMoTa").value = moTa || "";
-    document.getElementById("editImg").value = img || "";
-    document.getElementById("editDaoDien").value = daoDien || "";
-    document.getElementById("editDienVien").value = dienVien || "";
-    document.getElementById("editNam").value = nam || "";
-    document.getElementById("editTrangThai").value = trangThai;
+function editMovie(id) {
+    fetch(API + "?id=" + id)
+        .then(res => res.json())
+        .then(m => {
+            document.getElementById("editBox").style.display = "block";
+
+            document.getElementById("editId").value = m.movieId;
+            document.getElementById("editTenPhim").value = m.tenPhim || "";
+            document.getElementById("editThoiLuong").value = m.thoiLuong || "";
+            document.getElementById("editMoTa").value = m.moTa || "";
+            document.getElementById("editImg").value = m.img || "";
+            document.getElementById("editDaoDien").value = m.daoDien || "";
+            document.getElementById("editDienVien").value = m.dienVien || "";
+            document.getElementById("editNam").value = m.namSanXuat || "";
+            document.getElementById("editTrangThai").value = m.trangThai;
+        });
 }
 function updateMovie() {
     clearErrors("#editBox .error");
@@ -193,7 +198,7 @@ function searchMovie() {
                     <td>${m.namSanXuat}</td>
                     <td>${m.trangThai}</td>
                     <td>
-                        <button onclick='showEdit(${m.movieId}, ${JSON.stringify(m.tenPhim)}, ${m.thoiLuong}, ${JSON.stringify(m.moTa ?? "")}, ${JSON.stringify(m.img ?? "")}, ${JSON.stringify(m.daoDien ?? "")}, ${JSON.stringify(m.dienVien ?? "")}, ${m.namSanXuat}, ${JSON.stringify(m.trangThai)})'>Sửa</button>
+                        <button onclick="editMovie(${m.movieId})">Sửa</button>
                         <button onclick="deleteMovie(${m.movieId})">Xóa</button>
                     </td>
                 </tr>`;
@@ -227,7 +232,7 @@ function autoFilter() {
                     <td>${m.namSanXuat}</td>
                     <td>${m.trangThai}</td>
                     <td>
-                        <button onclick='showEdit(${m.movieId}, ${JSON.stringify(m.tenPhim)}, ${m.thoiLuong}, ${JSON.stringify(m.moTa ?? "")}, ${JSON.stringify(m.img ?? "")}, ${JSON.stringify(m.daoDien ?? "")}, ${JSON.stringify(m.dienVien ?? "")}, ${m.namSanXuat}, ${JSON.stringify(m.trangThai)})'>Sửa</button>
+                        <button onclick="editMovie(${m.movieId})">Sửa</button>
                         <button onclick="deleteMovie(${m.movieId})">Xóa</button>
                     </td>
                 </tr>`;
@@ -236,8 +241,9 @@ function autoFilter() {
             document.getElementById("movieTable").innerHTML = html;
         });
 }
-loadMovies();
+
 window.onload = function () {
+    loadMovies();
     document.getElementById("searchName").addEventListener("input", autoFilter);
     document.getElementById("filterStatus").addEventListener("change", autoFilter);
 };

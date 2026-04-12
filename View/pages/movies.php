@@ -1,5 +1,10 @@
 <?php include "../component/header.php"; ?>
-<div class="container">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../css/movies.css">
+</head>
+
+<div class="movie-page">
     <div class="search-box">
         <input id="searchName" placeholder="Tìm tên phim...">
         <button onclick="searchMovie()">Tìm</button>
