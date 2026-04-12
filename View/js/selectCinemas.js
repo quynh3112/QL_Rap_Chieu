@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try{
         const res=await fetch(`../../Controllers/branchController.php?branchId=${encodeURIComponent(branchId)}`)
         const data=await res.json()
-        films.innerHTML='';
+        films.innerHTML="";
         data.forEach(f=>{
             const item=document.createElement('div')
             item.className='item'

@@ -11,9 +11,9 @@
          <?php
             include "../component/header.php"
             ?>
-        <div style="margin-top:70px">
+        <div style="margin-top:70px" class="">
            
-            <div>
+            <div class="select" >
                 <div id="city">
                     <h1>CGV CINEMAS</h1>
                     <div class="line"></div>
@@ -23,7 +23,9 @@
                 <div id="branches"></div>
             </div>
             <div>
+               
                 <div id="items" class="films">
+                  
                    
                 </div>
             

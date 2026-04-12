@@ -1,6 +1,6 @@
 .line{
-    width: 70%;
-    height: 1px;
+    width: 1px;
+    height: 70%px;
     background-color: gray;
 }
 .city{
@@ -8,17 +8,9 @@
     flex-wrap: wrap;
 
 }
-p{
-    width: 120px;
-    padding: 10px;
-    background:gray;
-    text-align: center;
-    border: 1px solid #ccc;
-    color: white;
-}
-p:hover{
-    background-color:#EB4638
-}
+
+
+
 .films{
     display: grid;
     grid-template-columns: repeat(auto-fill,300px);
@@ -48,4 +40,35 @@ p:hover{
 }
 .item:hover{
     transform: scale(1.05);
+}
+.tp.active {
+    color: #EB4638;
+}
+.tp {
+    color: black;
+    font-size: 20px;
+}
+.chiNhanh{
+      color:black;
+      font-size: 20px;
+}
+.chiNhanh.active {
+    color: #EB4638;
+}
+.chiNhanh:hover{
+    color:orange; 
+}
+.tp:hover{
+color:orange;
+}
+.select{
+    display: flex;
+    flex-direction: row;
+   gap: 20px;
+   margin-left: 50%;
+   transform: translateX(-50%);
+
+}
+.films{
+    margin: 30px;
 }

@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             movies.innerHTML = "";
 
-            // ❌ nếu API trả object lỗi
             if (!Array.isArray(data)) {
                 const p = document.createElement('p');
                 p.textContent = data.message || "Không có dữ liệu";
@@ -52,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // ❌ mảng rỗng
             if (data.length === 0) {
                 const p = document.createElement('p');
                 p.textContent = "Không có phim";
