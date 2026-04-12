@@ -1,0 +1,112 @@
+body{
+    background-color: black;
+    font-size: 20px;
+}
+.table{
+    border-collapse: collapse;
+     border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px black;
+    font-family: Arial, sans-serif;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-45%);
+    
+}
+
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px white;
+}
+
+tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: 0.2s;
+}
+
+
+button{
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#cancelBtn{
+    background: #333;
+    color: white;
+}
+#cancelBtn:hover{
+    background: #444;
+}
+
+
+
+
+th {
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+td {
+    font-size: 14px;
+    color: white;
+}
+
+thead{
+    background-color: red;
+    color: white;
+}
+button{
+    font-size: 16px;
+    background-color: #f5c518;
+    padding:10px;
+    border:none;
+    color: #eee;
+    border-radius: 10px;
+    
+}
+
+select, input,option{
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background-color: #111;
+    color: white;
+    outline: none;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:start;
+    gap:5px;
+    background-color: #3C3C3C;
+    
+}
+dialog{
+    background-color: #3C3C3C;
+}
+.main{
+    position: relative;
+    width: 100vw;
+    margin-top: 60px;
+}
+#btn-dialog{
+margin-left: 30%;    
+   
+}
+#openBtn{
+    margin-left: 35%;    
+
+}
+
+
+
+
