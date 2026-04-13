@@ -155,44 +155,4 @@ class Booking {
         }
         return false;
     }
-
-    // Phanh thêm: Hàm mới viết thêm để phục vụ giao diện lịch sử đặt vé 
-    public function findHistoryByUser($accountId) {
-        global $conn;
-        $sql = "SELECT 
-                    b.bookingId, b.soLuong, b.trangThai, b.ngayDat,
-                    s.ngayChieu, s.gioChieu, s.giaVe,
-                    m.tenPhim, m.img, r.tenPhong,
-                    (b.soLuong * s.giaVe) as tongTien,
-                    GROUP_CONCAT(st.tenGhe SEPARATOR ', ') as danhSachGhe
-                FROM Booking b
-                LEFT JOIN Schedule s ON b.scheduleId = s.scheduleId
-                LEFT JOIN Movie m    ON s.movieId    = m.movieId
-                LEFT JOIN Room r     ON s.roomId      = r.roomId
-                LEFT JOIN BookingSeat bs ON b.bookingId = bs.bookingId
-                LEFT JOIN Seat st    ON bs.seatId    = st.seatId
-                WHERE b.accountId = $accountId
-                GROUP BY b.bookingId
-                ORDER BY b.ngayDat DESC";
-        return $conn->query($sql);
-    }
-
-    // Phanh thêm: Lấy danh sách bắp nước theo ID đơn hàng (bookingId)
-    public function getFoodByBooking($bookingId) {
-        global $conn;
-        $sql = "SELECT f.tenFood, fod.soLuong, (fod.soLuong * fod.giaLucMua) as thanhTien
-                FROM FoodOrder fo
-                JOIN FoodOrderDetail fod ON fo.foodOrderId = fod.foodOrderId
-                JOIN Food f ON fod.foodId = f.foodId
-                WHERE fo.bookingId = $bookingId";
-        
-        $res = $conn->query($sql);
-        $foods = [];
-        if ($res && $res->num_rows > 0) {
-            while ($row = $res->fetch_assoc()) {
-                $foods[] = $row;
-            }
-        }
-        return $foods;
-    }
 }
