@@ -3,8 +3,9 @@ session_start();
 ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../css/headerAdmin.css">
 
-<header>
+<header >
     <div class="bar">
         <h2><i class="fa-solid fa-bars"></i></h2>
         <div class="items">

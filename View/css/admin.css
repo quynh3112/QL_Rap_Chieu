@@ -1,0 +1,81 @@
+/* ===== ADMIN CGV STYLE ===== */
+body { background: #0d0d0d; color: #e0e0e0; font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; }
+.hidden { display: none !important; }
+hr { border: none; border-top: 1px solid #2c2c2c; margin: 0; }
+
+/* NAV */
+#admin-nav, body > div:first-child {
+    background: #111; border-bottom: 2px solid #e71a0f;
+    padding: 0 20px; display: flex; align-items: center; gap: 4px;
+    height: 52px; position: sticky; top: 0; z-index: 100; flex-wrap: wrap;
+}
+body > div:first-child > strong { color: #e71a0f; font-size: 17px; font-weight: bold; letter-spacing: 2px; margin-right: 10px; }
+body > div:first-child > span { color: #888; font-size: 13px; margin-right: 8px; border-right: 1px solid #333; padding-right: 10px; }
+
+/* NAV BUTTONS */
+body > div:first-child > button {
+    background: none; border: none; color: #888;
+    padding: 16px 13px; cursor: pointer; font-size: 13px;
+    border-bottom: 3px solid transparent; margin-bottom: -2px;
+}
+body > div:first-child > button:hover { color: #e71a0f; border-bottom-color: #e71a0f; }
+body > div:first-child > button[onclick="adminLogout()"] {
+    margin-left: auto; background: #e71a0f; color: #fff;
+    border: none; padding: 6px 14px; border-radius: 4px; margin-bottom: 0;
+}
+
+/* CONTENT WRAP */
+body > div[id^="tab-"] {
+    max-width: 1300px; margin: 24px auto; padding: 0 20px;
+}
+h2 { font-size: 20px; border-left: 4px solid #e71a0f; padding-left: 12px; margin-bottom: 18px; }
+
+/* FILTER ROW */
+body > div[id^="tab-"] > div:first-of-type {
+    display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;
+}
+
+/* SELECT & INPUT */
+select, input[type="month"], input[type="week"] {
+    background: #1a1a1a; border: 1px solid #333; color: #e0e0e0;
+    padding: 7px 11px; border-radius: 4px; font-size: 13px;
+}
+
+/* BUTTONS */
+button {
+    background: #e71a0f; color: #fff; border: none;
+    padding: 7px 16px; border-radius: 4px; cursor: pointer; font-size: 13px;
+}
+button:hover { background: #c0150c; }
+
+/* TABLE */
+table { width: 100%; border-collapse: collapse; }
+th { background: #1a1a1a; color: #f5c518; padding: 11px 13px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; border-bottom: 2px solid #2c2c2c; }
+td { padding: 9px 13px; border-bottom: 1px solid #1c1c1c; font-size: 13px; vertical-align: middle; }
+tr:hover td { background: #111; }
+tfoot tr td, tfoot tr { color: #f5c518; font-weight: bold; background: #1a1a1a; }
+
+/* STATUS */
+b { font-weight: 600; }
+
+/* SMALL BUTTONS IN TABLE */
+td button { padding: 3px 9px; font-size: 12px; border-radius: 3px; margin-right: 3px; }
+td button:nth-child(1) { background: #27ae60; }
+td button:nth-child(2) { background: #e74c3c; }
+td button:nth-child(3) { background: #2980b9; }
+td button:nth-child(4) { background: #c0150c; }
+
+/* DIALOG */
+dialog {
+    background: #1a1a1a; border: 1px solid #333; border-radius: 8px;
+    padding: 24px; color: #e0e0e0; width: 380px; max-width: 95vw;
+}
+dialog h3 { color: #e71a0f; margin-bottom: 18px; }
+dialog input, dialog select {
+    display: block; width: 100%; margin-bottom: 12px;
+    background: #0d0d0d; border: 1px solid #333; color: #e0e0e0;
+    padding: 9px 11px; border-radius: 4px; font-size: 13px; box-sizing: border-box;
+}
+dialog > form > div > button { width: 48%; }
+dialog > form > div > button:first-child { background: #333; }
+dialog::backdrop { background: rgba(0,0,0,.8); }

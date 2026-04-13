@@ -1,14 +1,22 @@
-.line{
-    width: 1px;
-    height: 70%px;
-
-}
-.city{
+.select{
+    margin-top: 20px;
     display: flex;
-    flex-wrap: wrap;
-
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 50px;
 }
-
+.chiNhanh{
+      color:black;
+      font-size: 20px;
+}
+.chiNhanh.active {
+    color: #EB4638;
+}
+.chiNhanh:hover{
+    color:orange; 
+}
 .films{
     display: grid;
     grid-template-columns: repeat(auto-fill,300px);
@@ -38,35 +46,4 @@
 }
 .item:hover{
     transform: scale(1.05);
-}
-.tp.active {
-    color: #EB4638;
-}
-.tp {
-    color: black;
-    font-size: 20px;
-}
-.chiNhanh{
-      color:black;
-      font-size: 20px;
-}
-.chiNhanh.active {
-    color: #EB4638;
-}
-.chiNhanh:hover{
-    color:orange; 
-}
-.tp:hover{
-color:orange;
-}
-.select{
-    display: flex;
-    flex-direction: row;
-   gap: 20px;
-   margin-left: 50%;
-   transform: translateX(-30%);
-
-}
-.films{
-    margin: 30px;
 }

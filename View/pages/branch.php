@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Quản lí chi nhánh</title>
+            <link rel="stylesheet" href="../css/branch.css">
+
 </head>
 <body>
-    <div>
+    <div class="main">
         <button id="btn-dialog">Thêm Chi Nhánh</button>
         <dialog id="myDialog">
             <form id="branchForm">
@@ -27,6 +29,7 @@
                     <th>TÊN CHI NHÁNH</th>
                     <th>ĐỊA CHỈ</th>
                     <th>THÀNH PHỐ</th>
+                    <th>Thao Tác</th>
                 </tr>
             </thead>
             <tbody id="items">
