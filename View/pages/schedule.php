@@ -51,6 +51,26 @@ body {
     background: linear-gradient(120deg, #1f1c2c, #928dab);
     color: #333;
 }
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    opacity: 0;
+    transition: 0.3s;
+    z-index: 999;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+.toast.success { background: #28a745; }
+.toast.error { background: #dc3545; }
+.toast.warning { background: orange; }
 
 /* TITLE */
 .title {
@@ -133,6 +153,10 @@ th, td {
 }
 
 /* STATUS */
+.dang {
+    background: green;
+}
+
 .status {
     padding: 4px 8px;
     border-radius: 6px;
@@ -144,6 +168,8 @@ th, td {
 .ket { background: gray; }
 .huy { background: red; }
 </style>
+
+<div id="toast" class="toast"></div>
 
 <!-- SCRIPT -->
 <script src="../js/schedule.js"></script>

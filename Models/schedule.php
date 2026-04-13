@@ -5,18 +5,34 @@ class Schedule {
         $this->conn = $db;
     }
     public function getAll(){
-        $sql = "SELECT s.*, m.tenPhim, r.tenPhong,
-                CASE 
-                    WHEN s.isCancelled = 1 THEN 'Đã hủy'
-                    WHEN CONCAT(s.ngayChieu, ' ', s.gioChieu) < NOW() THEN 'Đã kết thúc'
-                    ELSE 'Sắp diễn ra'
-                END AS trangThai
-                FROM Schedule s
-                JOIN Movie m ON s.movieId = m.movieId
-                JOIN Room r ON s.roomId = r.roomId
-                ORDER BY s.ngayChieu, s.gioChieu";
-        return $this->conn->query($sql);
-    }
+    $sql = "SELECT s.*, m.tenPhim, r.tenPhong,
+            CASE 
+    WHEN s.isCancelled = 1 THEN 'Đã hủy'
+
+    WHEN NOW() BETWEEN 
+        STR_TO_DATE(CONCAT(s.ngayChieu, ' ', s.gioChieu), '%Y-%m-%d %H:%i:%s')
+        AND DATE_ADD(
+            STR_TO_DATE(CONCAT(s.ngayChieu, ' ', s.gioChieu), '%Y-%m-%d %H:%i:%s'),
+            INTERVAL 2 HOUR
+        )
+    THEN 'Đang chiếu'
+
+    WHEN NOW() > DATE_ADD(
+        STR_TO_DATE(CONCAT(s.ngayChieu, ' ', s.gioChieu), '%Y-%m-%d %H:%i:%s'),
+        INTERVAL 2 HOUR
+    )
+    THEN 'Đã kết thúc'
+
+    ELSE 'Sắp diễn ra'
+END AS trangThai
+
+            FROM Schedule s
+            JOIN Movie m ON s.movieId = m.movieId
+            JOIN Room r ON s.roomId = r.roomId
+            ORDER BY s.ngayChieu, s.gioChieu";
+
+    return $this->conn->query($sql);
+}
     public function getById($id){
         $sql = "SELECT * FROM Schedule WHERE scheduleId=?";
         $stmt = $this->conn->prepare($sql);
@@ -24,11 +40,31 @@ class Schedule {
         return $stmt->get_result()->fetch_assoc();
     }
     public function getByMovie($movieId){
-        $sql = "SELECT * FROM Schedule WHERE movieId=?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$movieId]);
-        return $stmt->get_result();
-    }
+    $sql = "SELECT s.*, m.tenPhim, r.tenPhong,
+            CASE 
+                WHEN s.isCancelled = 1 THEN 'Đã hủy'
+
+                WHEN NOW() BETWEEN 
+                    TIMESTAMP(s.ngayChieu, s.gioChieu) 
+                    AND TIMESTAMP(s.ngayChieu, s.gioChieu) + INTERVAL 2 HOUR
+                THEN 'Đang chiếu'
+
+                WHEN NOW() > TIMESTAMP(s.ngayChieu, s.gioChieu) + INTERVAL 2 HOUR
+                THEN 'Đã kết thúc'
+
+                ELSE 'Sắp diễn ra'
+            END AS trangThai
+
+            FROM Schedule s
+            JOIN Movie m ON s.movieId = m.movieId
+            JOIN Room r ON s.roomId = r.roomId
+            WHERE s.movieId=?
+            ORDER BY s.ngayChieu, s.gioChieu";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute([$movieId]);
+    return $stmt->get_result();
+}
     private function isDuplicate($roomId, $date, $time, $excludeId = null){
         $sql = "SELECT * FROM Schedule 
                 WHERE roomId=? AND ngayChieu=? AND gioChieu=?";
@@ -57,23 +93,33 @@ class Schedule {
         ]);
     }
     public function update($id, $data){
-        if($this->isDuplicate($data['roomId'], $data['ngayChieu'], $data['gioChieu'], $id)){
-            return "duplicate";
-        }
-        $sql = "UPDATE Schedule SET 
-                movieId=?, roomId=?, ngayChieu=?, gioChieu=?, giaVe=?, isCancelled=?
-                WHERE scheduleId=?";
+
+    // chỉ update trạng thái (hủy)
+    if(isset($data['isCancelled']) && count($data) == 1){
+        $sql = "UPDATE Schedule SET isCancelled=? WHERE scheduleId=?";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            $data['movieId'],
-            $data['roomId'],
-            $data['ngayChieu'],
-            $data['gioChieu'],
-            $data['giaVe'],
-            $data['isCancelled'],
-            $id
-        ]);
+        return $stmt->execute([$data['isCancelled'], $id]);
     }
+
+    // update bình thường
+    if($this->isDuplicate($data['roomId'], $data['ngayChieu'], $data['gioChieu'], $id)){
+        return "duplicate";
+    }
+
+    $sql = "UPDATE Schedule SET 
+            movieId=?, roomId=?, ngayChieu=?, gioChieu=?, giaVe=?, isCancelled=?
+            WHERE scheduleId=?";
+    $stmt = $this->conn->prepare($sql);
+    return $stmt->execute([
+        $data['movieId'],
+        $data['roomId'],
+        $data['ngayChieu'],
+        $data['gioChieu'],
+        $data['giaVe'],
+        $data['isCancelled'] ?? 0,
+        $id
+    ]);
+}
     public function delete($id){
         // check đã có booking chưa
         $check = "SELECT * FROM Booking WHERE scheduleId=?";

@@ -1,9 +1,10 @@
 body {
     font-family: Arial;
-    background: #f4f6f9;
+    background: linear-gradient(120deg, #1f1c2c, #928dab);
+    color: white;
 }
 
-/* TRÁNH HEADER ĐÈ */
+/* PAGE */
 .movie-page {
     margin-top: 80px;
     padding: 20px;
@@ -20,7 +21,7 @@ body {
 .search-box select {
     padding: 8px;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: none;
 }
 
 /* FORM */
@@ -35,9 +36,11 @@ body {
     background: white;
     padding: 20px;
     border-radius: 10px;
+    color: black;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-/* FIX LỖI LỆCH FORM */
+/* FORM ROW */
 .form-row {
     display: flex;
     flex-direction: column;
@@ -56,13 +59,13 @@ button {
     padding: 8px 12px;
     border: none;
     border-radius: 6px;
-    background: #e74c3c;
-    color: white;
     cursor: pointer;
+    background: #6a5acd;
+    color: white;
 }
 
 button:hover {
-    background: #c0392b;
+    background: #483d8b;
 }
 
 /* TABLE */
@@ -71,6 +74,7 @@ button:hover {
     padding: 20px;
     border-radius: 10px;
     overflow-x: auto;
+    color: black;
 }
 
 table {
@@ -79,22 +83,18 @@ table {
 }
 
 th {
-    background: #2c3e50;
+    background: #6a5acd;
     color: white;
 }
 
 th, td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     text-align: center;
 }
 
 tr:nth-child(even) {
-    background: #fafafa;
-}
-
-tr:hover {
-    background: #f1f1f1;
+    background: #f5f5f5;
 }
 
 /* IMAGE */
@@ -104,6 +104,18 @@ img {
     object-fit: cover;
     border-radius: 5px;
 }
+
+/* STATUS */
+.status {
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: white;
+    font-size: 12px;
+}
+
+.sap { background: orange; }
+.dang { background: green; }
+.ket { background: gray; }
 
 /* ERROR */
 .error {

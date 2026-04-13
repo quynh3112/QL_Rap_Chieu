@@ -77,12 +77,19 @@ body {
 </style>
 
 <script>
-const API = "../../QL_Rap_Chieu/Controllers/movies.php";
+const API = "/QL_Rap_Chieu/Controllers/movies.php";
 
-function getStatusClass(status){
+function getMovieStatusClass(status){
     if(status === "Sắp chiếu") return "sap";
     if(status === "Đang chiếu") return "dang";
     return "ket";
+}
+function getScheduleStatusClass(status){
+    if(status === "Sắp diễn ra") return "sap";
+    if(status === "Đang chiếu") return "dang";
+    if(status === "Đã kết thúc") return "ket";
+    if(status === "Đã hủy") return "ket";
+    return "";
 }
 
 function loadMoviesUser() {
@@ -100,8 +107,8 @@ function loadMoviesUser() {
                     <div class="movie-info">
                         <h4>${m.tenPhim}</h4>
                         <p>${m.thoiLuong} phút</p>
-                        <span class="status ${getStatusClass(m.trangThai)}">
-                            ${m.trangThai}
+                        <span class="status ${getMovieStatusClass(m.trangThai)}">
+                        ${m.trangThai}
                         </span>
                     </div>
                 </div>

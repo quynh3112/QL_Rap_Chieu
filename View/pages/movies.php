@@ -1,8 +1,4 @@
 <?php include "../component/header.php"; ?>
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="../css/movies.css">
-</head>
 
 <div class="movie-page">
     <div class="search-box">
@@ -108,4 +104,127 @@
         </table>
     </div>
 </div>
+<style>
+body {
+    font-family: Arial;
+    background: linear-gradient(120deg, #1f1c2c, #928dab);
+    color: #333;
+}
+
+/* TITLE */
+.title {
+    text-align: center;
+    color: white;
+    margin-top: 20px;
+}
+
+/* SEARCH */
+.search-box {
+    margin: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.search-box input,
+.search-box select {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+}
+
+/* FORM */
+.form-area {
+    display: flex;
+    gap: 20px;
+    margin: 20px;
+}
+
+.box {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    color: black;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.form-row input,
+.form-row select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* BUTTON */
+button {
+    padding: 8px 12px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #6a5acd;
+    color: white;
+}
+
+button:hover {
+    background: #483d8b;
+}
+
+/* TABLE */
+.table-area {
+    margin: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #6a5acd;
+    color: white;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+/* STATUS */
+.status {
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: white;
+    font-size: 12px;
+}
+
+.sap { background: orange; }
+.dang { background: green; }
+.ket { background: gray; }
+
+/* IMAGE */
+img {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* ERROR */
+.error {
+    color: red;
+    font-size: 12px;
+}
+</style>
+
 <script src="../js/movies.js"></script>

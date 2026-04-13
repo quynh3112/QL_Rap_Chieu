@@ -2,6 +2,9 @@
 
 <div id="movieDetail" class="detail-container"></div>
 
+<h3 style="text-align:center; margin-top:20px;">📅 Lịch chiếu</h3>
+<div id="scheduleList" style="padding:20px;"></div>
+
 <style>
 body {
     background: linear-gradient(135deg, #1f1c2c, #928dab);
@@ -90,7 +93,7 @@ body {
 
 <script>
 const API = "http://localhost:8080/QL_Rap_Chieu/Controllers/movies.php";
-
+const SCHEDULE_API = "http://localhost:8080/QL_Rap_Chieu/Controllers/schedules.php";
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
@@ -136,6 +139,51 @@ function loadDetail(){
             document.getElementById("movieDetail").innerHTML = html;
         });
 }
+function getScheduleStatusClass(status){
+    if(status === "Sắp diễn ra") return "sap";
+    if(status === "Đang chiếu") return "dang";
+    if(status === "Đã kết thúc") return "ket";
+    if(status === "Đã hủy") return "ket";
+    return "";
+}
+function loadSchedules(){
+    console.log("movieId:", id);
 
+    fetch(SCHEDULE_API + "?movieId=" + id)
+        .then(res => res.json())
+        .then(data => {
+            console.log("DATA:", data); // 👈 thêm dòng này
+
+            let html = "";
+
+            if(!data || data.length === 0){
+                html = "<p style='text-align:center'>Không có lịch chiếu</p>";
+            }
+
+            data.forEach(s => {
+                html += `
+                <div style="
+                    background: rgba(255,255,255,0.1);
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    border-radius: 10px;
+                ">
+                    🏢 ${s.tenPhong} <br>
+                    📅 ${s.ngayChieu} - ⏰ ${s.gioChieu} <br>
+                    💰 ${s.giaVe} VNĐ <br>
+                    <span class="tag ${getScheduleStatusClass(s.trangThai)}">
+                        ${s.trangThai}
+                    </span>
+                </div>
+                `;
+            });
+
+            document.getElementById("scheduleList").innerHTML = html;
+        })
+        .catch(err => {
+            console.error("Lỗi fetch:", err);
+        });
+}
 loadDetail();
+loadSchedules();
 </script>
