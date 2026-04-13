@@ -30,9 +30,12 @@
 
         public function getall($movieId) {
             global $conn;
-
-            $sql = "SELECT * FROM review WHERE movieId = '$movieId'";
-
+            // Kết nối bảng review với bảng account để lấy username
+            $sql = "SELECT r.*, a.username 
+                    FROM review r 
+                    LEFT JOIN Account a ON r.accountId = a.accountId 
+                    WHERE r.movieId = '$movieId'
+                    ORDER BY r.reviewDate DESC"; 
             return $conn->query($sql);
         }
     }

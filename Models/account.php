@@ -70,5 +70,17 @@
             $sql = "SELECT * FROM account WHERE accountId = $accountId";
             return $conn->query($sql);
         }
+
+        public function isUsernameExists($username) {
+            global $conn;
+            $sql = "SELECT accountId FROM account WHERE username = '$username'";
+            $result = $conn->query($sql);
+            return $result->num_rows > 0; // Trả về true nếu đã tồn tại
+        }
+        public function staffByBranch($branchId) {
+            global $conn;
+            $sql = "SELECT * FROM account WHERE branchId='$branchId' ";
+            return $conn->query($sql);
+        }
     }
 ?>

@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const branchVip = document.getElementById('branches');
     const movies = document.getElementById('movies');
 
-    // 🔹 Load danh sách chi nhánh có phòng VIP
     async function loadBranchVip() {
         try {
             const res = await fetch('../../Controllers/branchVipController.php');
@@ -18,9 +17,14 @@ document.addEventListener("DOMContentLoaded", () => {
             data.forEach(b => {
                 const item = document.createElement('p');
                 item.textContent = b.tenBranch;
+                item.className="chiNhanh"
                 item.style.cursor = "pointer";
 
                 item.onclick = () => {
+                    document.querySelectorAll('.chiNhanh').forEach(i=>{
+                        i.classList.remove('active');
+                    })
+                    item.classList.add('active')
                     renderFilms(b.branchId);
                 };
 
@@ -32,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 🔹 Load phim theo chi nhánh VIP
     async function renderFilms(branchId) {
         try {
             console.log("BranchId:", branchId);
@@ -40,27 +43,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch(`../../Controllers/branchController.php?vip=${branchId}`);
             const data = await res.json();
 
-            console.log("DATA:", data);
 
             movies.innerHTML = "";
 
-            // ❌ nếu API trả object lỗi
             if (!Array.isArray(data)) {
-                const p = document.createElement('p');
-                p.textContent = data.message || "Không có dữ liệu";
-                movies.appendChild(p);
+              alert( data.message || "Không có dữ liệu")
                 return;
             }
 
-            // ❌ mảng rỗng
             if (data.length === 0) {
                 const p = document.createElement('p');
                 p.textContent = "Không có phim";
+                p.style.textAlign="center"
                 movies.appendChild(p);
                 return;
             }
 
-            // ✅ render phim
             data.forEach((m, index) => {
                 console.log("Film:", index, m);
 
@@ -68,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 item.className = "item";
 
                 const img = document.createElement("img");
-                img.src = m.img || "default.jpg"; // tránh lỗi ảnh
+                img.src = m.img ; 
 
                 const title = document.createElement('h3');
                 title.textContent = m.tenPhim;

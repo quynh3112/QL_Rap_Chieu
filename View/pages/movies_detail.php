@@ -2,8 +2,15 @@
 
 <div id="movieDetail" class="detail-container"></div>
 
+<<<<<<< HEAD
 <h3 style="text-align:center; margin-top:20px;">📅 Lịch chiếu</h3>
 <div id="scheduleList" style="padding:20px;"></div>
+=======
+<?php include "movie_comments.php"; ?>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+>>>>>>> 85a9c30ad51b966104e06b8c52c6bf9b1b983c69
 
 <style>
 body {
@@ -92,8 +99,13 @@ body {
 <a href="movies_user.php" class="back-btn">← Quay lại</a>
 
 <script>
+<<<<<<< HEAD
 const API = "http://localhost:8080/QL_Rap_Chieu/Controllers/movies.php";
 const SCHEDULE_API = "http://localhost:8080/QL_Rap_Chieu/Controllers/schedules.php";
+=======
+const API = "../../Controllers/movies.php";
+
+>>>>>>> 85a9c30ad51b966104e06b8c52c6bf9b1b983c69
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 

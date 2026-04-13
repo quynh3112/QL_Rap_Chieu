@@ -28,8 +28,15 @@
                         "message" => "Sai email hoặc mật khẩu."
                     ]);
                 }
-            } else {
-                // Mặc định là Đăng ký (Create)
+            } else if($data['action'] == 'create') {
+                if($account->isUsernameExists($data['username'])) {
+                    echo json_encode([
+                        "status" => false,
+                        "message" => "Tên đăng nhập đã có người sử dụng, vui lòng sử dụng tên khác."
+                    ]);
+                    exit;
+                }
+
                 if($account->create($data['username'], $data['password'], $data['hoTen'], $data['email'], $data['sdt'], $data['role'], $data['branchId'], date('Y-m-d H:i:s'))) {
                     echo json_encode([
                         "status" => true,
@@ -45,25 +52,32 @@
             break;
 
         case "PUT":
-            // Tách biệt xử lý Update dựa trên dữ liệu gửi lên
-            if(!empty($data['password'])) {
-                // Nếu có password mới thì cập nhật mật khẩu
-                if($account->changePassword($data['accountId'], $data['password'])) {
-                    echo json_encode([
-                        "status" => true,
-                        "message" => "Đổi mật khẩu thành công!"
-                    ]);
+            $statusInfo = false;
+            $statusPass = false;
+
+            // 1. Luôn cập nhật thông tin cá nhân
+            $branchId_SQL = empty($data['branchId']) ? "NULL" : (int)$data['branchId'];
+            if($account->update($data['accountId'], $data['username'], $data['hoTen'], $data['email'], $data['sdt'], $branchId_SQL, $data['role'])) {
+                if (isset($_SESSION['user']) && $_SESSION['user']['accountId'] == $data['accountId']) {
+                    $_SESSION['user']['username'] = $data['username'];
+                    $_SESSION['user']['hoTen'] = $data['hoTen'];
+                    $_SESSION['user']['email'] = $data['email'];
+                    $_SESSION['user']['sdt'] = $data['sdt'];
                 }
-            } else {
-                $branchId_SQL = empty($data['branchId']) ? "NULL" : (int)$data['branchId'];
-                // Cập nhật thông tin profile
-                if($account->update($data['accountId'], $data['username'], $data['hoTen'], $data['email'], $data['sdt'], $branchId_SQL, $data['role'])) {
-                    echo json_encode([
-                        "status" => true,
-                        "message" => "Cập nhật thông tin thành công!"
-                    ]);
+                $statusInfo = true;
+            }
+
+            // 2. Nếu có nhập mật khẩu thì cập nhật thêm mật khẩu
+            if(!empty($data['password'])) {
+                if($account->changePassword($data['accountId'], $data['password'])) {
+                    $statusPass = true;
                 }
             }
+
+            echo json_encode([
+                "status" => $statusInfo,
+                "message" => "Cập nhật thành công!" . ($statusPass ? " (Đã đổi mật khẩu)" : "")
+            ]);
             break;
 
         case "DELETE":
@@ -82,6 +96,16 @@
 
         case "GET":
             $accountId = $_GET['accountId'] ?? $data['accountId'] ?? null;
+            $branchId = $_GET['branchId'] ?? null;
+            if ($branchId) {
+                $result = $account->staffByBranch($branchId);
+                $list = [];
+                while ($row = $result->fetch_assoc()) {
+                    $list[] = $row;
+                }
+                echo json_encode($list);
+                exit;
+            }
 
             if ($accountId) {
                 $result = $account->getById($accountId);

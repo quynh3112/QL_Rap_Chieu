@@ -77,7 +77,11 @@ body {
 </style>
 
 <script>
+<<<<<<< HEAD
 const API = "/QL_Rap_Chieu/Controllers/movies.php";
+=======
+const API = "../../Controllers/movies.php";
+>>>>>>> 85a9c30ad51b966104e06b8c52c6bf9b1b983c69
 
 function getMovieStatusClass(status){
     if(status === "Sắp chiếu") return "sap";
