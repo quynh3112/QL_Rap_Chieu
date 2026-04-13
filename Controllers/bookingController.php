@@ -50,6 +50,16 @@ switch ($method) {
             echo json_encode($data);
             break;
         }
+        //Phanh thêm: API lấy lịch sử đặt vé (bao gồm cả đã hủy) của user
+        if ($action === 'history' && isset($_GET['accountId'])) {
+            $result = $booking->findHistoryByUser(intval($_GET['accountId']));
+            $data   = [];
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+            echo json_encode($data);
+            break; 
+        }
         // Booking của user
         if (isset($_GET['accountId'])) {
             $result = $booking->findByUser(intval($_GET['accountId']));
