@@ -97,28 +97,31 @@
             break;
 
         case "GET":
-            $movieId = $data["movieId"] ?? null;
+            $movieId = $_GET["movieId"] ?? null; 
             $list = [];
-            $result = $review -> getall($movieId);
+            $result = $review->getall($movieId);
             
-            if ($result && $result -> num_rows > 0) {
-                while ($row = $result -> fetch_assoc()) {
+            if ($result && $result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
                     $list[] = [
+                        "reviewId" => $row['reviewId'],       
+                        "accountId" => $row['accountId'],     
+                        "username" => $row['username'],       
                         "rating" => $row['rating'],
                         "comment" => $row['comment'],
-                        "review_date" => $row['reviewDate']
-                    ] ;    
+                        "reviewDate" => $row['reviewDate']
+                    ];    
                 }
                 echo json_encode ([
                     "status" => true,
                     "data" => $list
                 ]);
-            }
-            else {
+            } else {
                 echo json_encode ([
                     "status" => false,
                     "message" => "Chưa có bình luận nào!"
                 ]);
             }
+            break;
     }
 ?>
