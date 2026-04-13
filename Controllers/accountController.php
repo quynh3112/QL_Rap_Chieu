@@ -96,6 +96,16 @@
 
         case "GET":
             $accountId = $_GET['accountId'] ?? $data['accountId'] ?? null;
+            $branchId = $_GET['branchId'] ?? null;
+            if ($branchId) {
+                $result = $account->staffByBranch($branchId);
+                $list = [];
+                while ($row = $result->fetch_assoc()) {
+                    $list[] = $row;
+                }
+                echo json_encode($list);
+                exit;
+            }
 
             if ($accountId) {
                 $result = $account->getById($accountId);

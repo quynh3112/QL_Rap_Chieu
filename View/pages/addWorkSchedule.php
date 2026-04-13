@@ -7,8 +7,9 @@
 </head>
 
 <body class="bg-slate-900 text-white">
+    <?php include "../component/headerAd.php";?>
 
-    <h2 class="text-2xl font-bold text-center mt-8 text-sky-400">
+    <h2 class="text-2xl font-bold text-center mt-8 text-red-500">
         Thêm lịch làm việc
     </h2>
 
@@ -44,9 +45,11 @@
             <label class="block text-sm mb-1 text-slate-300">Ca làm</label>
             <select id="caLam"
                 class="w-full p-2 rounded-lg bg-slate-900 border border-slate-600 focus:border-sky-400 focus:ring-1 focus:ring-sky-400">
-                <option value="Sáng">Sáng</option>
-                <option value="Chiều">Chiều</option>
-                <option value="Tối">Tối</option>
+                <option value="Ca sáng">Ca sáng</option>
+                <option value="Ca Chiều">Ca chiều</option>
+                <option value="Ca tối">Ca tối</option>
+                <option value="Full-time">Full-time</option>
+                
             </select>
         </div>
 
@@ -67,7 +70,7 @@
 
         <!-- Button -->
         <button type="submit"
-            class="w-full py-3 rounded-lg bg-gradient-to-r from-sky-400 to-indigo-500 font-semibold hover:scale-105 transition">
+            class="w-full py-3 rounded-lg bg-gradient-to-r from-red-300 to-red-500 font-semibold hover:scale-105 transition">
             Thêm lịch
         </button>
 
@@ -75,7 +78,7 @@
 
     <p id="msg" class="text-center mt-4 font-bold"></p>
 
-    <script src="../js/addSchedule.js"></script>
+    <script src="../js/addWorkSchedule.js"></script>
 
 </body>
 </html>
