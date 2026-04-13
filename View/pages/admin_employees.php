@@ -2,6 +2,7 @@
 session_start();
 $isLoggedIn = isset($_SESSION['user']);
 $isAdmin = ($isLoggedIn && $_SESSION['user']['role'] === 'Admin');
+// Test khi là Admin:
 // $isLoggedIn = true; 
 // $isAdmin = true;
 ?>

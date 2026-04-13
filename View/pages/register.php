@@ -15,7 +15,7 @@
             <h3 class="text-center mb-4">Đăng Ký Thành Viên</h3>
             <form id="registerForm">
                 <div class="mb-3">
-                    <label class="form-label">Tên đăng nhập</label>
+                    <label class="form-label">Tên người dùng</label>
                     <input type="text" class="form-control" id="username" name="username" required>
                 </div>
                 <div class="mb-3">
@@ -39,6 +39,10 @@
                 <input type="hidden" id="branchId" name="branchId" value="null">
 
                 <button type="submit" class="btn btn-primary w-100">Đăng Ký</button>
+
+                <div class="mt-3 text-center">
+                    <p>Đã có tài khoản? <a href="login.php" >Quay lại Đăng nhập</a></p>
+                </div>
             </form>
             <div id="message" class="mt-3 text-center"></div>
         </div>
