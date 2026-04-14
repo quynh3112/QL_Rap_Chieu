@@ -1,6 +1,4 @@
-<?php
-session_start();
-?>
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="../css/headerAdmin.css">
@@ -10,13 +8,13 @@ session_start();
         <h2><i class="fa-solid fa-bars"></i></h2>
         <div class="items">
             <p><i class="fa-solid fa-x"></i></p>
-            <a href="">Quản lý phim</a>
-            <a href="">Quản lý xuất chiếu </a>
+            <a href="movies.php">Quản lý phim</a>
+            <a href="admin_food.php">Quản lý đồ ăn</a>
+            <a href="schedule.php">Quản lý xuất chiếu </a>
             <a href="">Quản Lý hóa đơn</a>
-            <a href="">Quản lý chi nhánh</a>
-            <a href="">Quản lý phòng </a>
-            <a href="">Quản lí nhân viên</a>
-            <a href="">Quản lí ca làm việc</a>
+            <a href="branch.php">Quản lý chi nhánh</a>
+            <a href="room.php">Quản lý phòng </a>
+            <a href="addWorkSchedule.php">Quản lí ca làm việc</a>
             <a href="">Doanh thu theo từng rạp</a>
         </div>
 
@@ -32,8 +30,8 @@ session_start();
             <div class='container'>
                 <button><?php echo htmlspecialchars($_SESSION['user']['hoTen']); ?></button>
                 <div class="dropdown">
-                    <a href="">Thông tin cá nhân</a>
-                    <a href="">Đăng xuất</a>
+                    <a href="profile_admin.php">Thông tin cá nhân</a>
+                    <a href="logout.php">Đăng xuất</a>
 
                 </div>
             </div>

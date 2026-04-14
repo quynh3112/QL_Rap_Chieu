@@ -29,42 +29,7 @@ async function loadAdminData() {
 //2. load danh sách đơn hàng
 async function loadOrders() {
     try {
-<<<<<<< HEAD
-        const res = await fetch('../../Controllers/foodController.php?action=list_orders');
-        const json = await res.json();
-        const container = document.getElementById('order-table-container');
-        
-        if (json.success) {
-            if (json.data.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:50px; color:#666;">Chưa có đơn hàng nào.</p>';
-                return;
-            }
 
-            container.innerHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Mã Đơn</th><th>Khách Hàng</th><th>Ngày Đặt</th><th>Tổng Tiền</th><th>Trạng Thái</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${json.data.map(o => `
-                            <tr>
-                                <td>#${o.foodOrderId}</td>
-                                <td>${o.hoTen}</td>
-                                <td>${o.ngayMua}</td>
-                                <td style="color:gold; font-weight:bold;">${new Intl.NumberFormat().format(o.tongTienFood)}đ</td>
-                                <td style="color:cyan;">${o.trangThai}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-    } catch (e) { console.error("Lỗi load đơn hàng:", e); }
-}
-
-=======
         const res = await fetch('../../Controllers/paymentController.php?action=list_pending');
         const json = await res.json();
         const container = document.getElementById('order-table-container');
@@ -158,7 +123,6 @@ async function submitPaymentAction(action, paymentId, actionText) {
     }
 }
 
->>>>>>> dev-food
 // 3. chuyển tab
 function switchTab(tab) {
     // ẩn/ hiện Section
@@ -221,7 +185,7 @@ async function saveFood() {
 
     try {
         // 2. Bây giờ mới dùng biến 'data' ở đây
-        const res = await fetch('/QL_Rap_Chieu/Controllers/foodController.php?action=save', {
+        const res = await fetch('../../Controllers/foodController.php?action=save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data) 

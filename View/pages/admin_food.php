@@ -18,6 +18,8 @@ $currentRole = $_SESSION['user']['role'] ?? '';
     <link rel="stylesheet" href="../css/food.css">
 </head>
 <body class="food-admin-body">
+    <?php include '../component/headerAd.php'; ?>
+
 
     <main class="food-admin-shell">
         <section class="food-hero">

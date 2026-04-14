@@ -1,177 +1,118 @@
 document.addEventListener("DOMContentLoaded", () => {
+
     const dialog = document.getElementById("myDialog");
     const openBtn = document.getElementById("openBtn");
     const cancelBtn = document.getElementById("cancelBtn");
     const form = document.getElementById("roomForm");
-    const selectBranch = document.getElementById("branch");
-    const roomTable = document.getElementById("roomTableBody");
-    const filterBranch=document.getElementById('filter')
+    const branch = document.getElementById("branch");
+    const table = document.getElementById("roomTableBody");
+    const filter = document.getElementById("filter");
 
     let currentId = null;
 
-
-    openBtn.addEventListener("click", () => {
+    openBtn.onclick = () => {
         form.reset();
         currentId = null;
         dialog.showModal();
-    });
+    };
 
-  
-    cancelBtn.addEventListener("click", () => {
-        dialog.close();
-    });
-   
-   
-    async function loadBranches() {
-        try {
-            const res = await fetch("../../Controllers/branchController.php");
-            const branches = await res.json();
+    cancelBtn.onclick = () => dialog.close();
 
-            selectBranch.innerHTML = `<option value="">-- Chọn chi nhánh --</option>`;
-            filterBranch.innerHTML=`<option value=>-- Chọn chi nhánh --</option>`
+    // LOAD BRANCH
+    async function loadBranch() {
+        const res = await fetch("../../Controllers/branchController.php");
+        const data = await res.json();
 
-            branches.forEach(branch => {
-                const option1 = document.createElement("option");
-                option1.value = branch.branchId;
-                option1.textContent = branch.tenBranch;
-                selectBranch.appendChild(option1);
+        branch.innerHTML = "<option value=''>Chọn chi nhánh</option>";
+        filter.innerHTML = "<option value=''>Tất cả</option>";
 
-                const option2=document.createElement('option')
-                option2.value=branch.branchId
-                option2.textContent=branch.tenBranch
-                filterBranch.appendChild(option2)
-            });
-
-        } catch (error) {
-            console.error("Lỗi load branch:", error);
-        }
+        data.forEach(b => {
+            branch.innerHTML += `<option value="${b.branchId}">${b.tenBranch}</option>`;
+            filter.innerHTML += `<option value="${b.branchId}">${b.tenBranch}</option>`;
+        });
     }
-    filterBranch.addEventListener('change',()=>{
-        loadRooms(filterBranch.value)
 
-
-    })
-    async function loadRooms(branchId = "") {
-    try {
+    // LOAD ROOM
+    async function loadRoom(branchId = "") {
         let url = "../../Controllers/roomController.php";
-
-        if (branchId) {
-            url += `?branchId=${branchId}`;
-        }
+        if (branchId) url += `?branchId=${branchId}`;
 
         const res = await fetch(url);
-        const rooms = await res.json();
+        const data = await res.json();
 
-        roomTable.innerHTML = "";
+        table.innerHTML = "";
 
-        rooms.forEach(room => {
+        data.forEach(r => {
             const tr = document.createElement("tr");
 
             tr.innerHTML = `
-                <td>${room.roomId}</td>
-                <td>${room.tenPhong}</td>
-                <td>${room.loaiPhong}</td>
-                <td>${room.tongGhe}</td>
-                
-                <td>
-                    <button class="editBtn">Sửa</button>
-                    <button class="deleteBtn">Xóa</button>
-                </td>
+            <td class="p-3 border border-yellow-400">${r.roomId}</td>
+            <td class="p-3 border border-yellow-400 font-semibold">${r.tenPhong}</td>
+            <td class="p-3 border border-yellow-400">
+                <span class="bg-yellow-400 text-black px-2 py-1 rounded">
+                    ${r.loaiPhong}
+                </span>
+            </td>
+            <td class="p-3 border border-yellow-400">${r.tongGhe}</td>
+            <td class="p-3 border border-yellow-400 space-x-2">
+                <button class="edit bg-yellow-400 text-black px-2 py-1 rounded">Sửa</button>
+                <button class="delete bg-red-600 px-2 py-1 rounded">Xóa</button>
+            </td>
             `;
 
-            
-            tr.querySelector(".editBtn").addEventListener("click", () => {
-                currentId = room.roomId;
-
-                form.tenPhong.value = room.tenPhong;
-                form.loaiPhong.value = room.loaiPhong;
-                form.tongGhe.value = room.tongGhe;
-                selectBranch.value = room.branchId;
-
+            // EDIT
+            tr.querySelector(".edit").onclick = () => {
+                currentId = r.roomId;
+                form.tenPhong.value = r.tenPhong;
+                form.loaiPhong.value = r.loaiPhong;
+                form.tongGhe.value = r.tongGhe;
+                branch.value = r.branchId;
                 dialog.showModal();
-            });
+            };
 
-            
-            tr.querySelector(".deleteBtn").addEventListener("click", async () => {
-                if (!confirm("Bạn có chắc muốn xóa?")) return;
+            // DELETE
+            tr.querySelector(".delete").onclick = async () => {
+                if (!confirm("Xóa phòng?")) return;
 
-                try {
-                    const res = await fetch("../../Controllers/roomController.php", {
-                        method: "DELETE",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            roomId: room.roomId
-                        })
-                    });
+                await fetch("../../Controllers/roomController.php", {
+                    method: "DELETE",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({roomId: r.roomId})
+                });
 
-                    const result = await res.json();
-                    alert(result.message);
+                loadRoom(filter.value);
+            };
 
-                    loadRooms(filterBranch.value);
-
-                } catch (error) {
-                    console.error("Lỗi xóa:", error);
-                }
-            });
-
-            roomTable.appendChild(tr);
+            table.appendChild(tr);
         });
-
-    } catch (error) {
-        console.error("Lỗi load room:", error);
-    }
-}
-
-
-
-    
-   form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const isEdit = currentId !== null && currentId !== undefined;
-
-    const data = {
-        tenPhong: form.tenPhong.value,
-        tongGhe: form.tongGhe.value,
-        loaiPhong: form.loaiPhong.value,
-        branchId: selectBranch.value
-    };
-
-    if (isEdit) {
-        data.roomId = currentId; 
     }
 
-    const method = isEdit ? "PUT" : "POST";
+    // FILTER
+    filter.onchange = () => loadRoom(filter.value);
 
-    console.log("METHOD:", method);
-    console.log("DATA:", data);
+    // SUBMIT
+    form.onsubmit = async (e) => {
+        e.preventDefault();
 
-    try {
-        const res = await fetch("../../Controllers/roomController.php", {
-            method: method,
-            headers: {
-                "Content-Type": "application/json"
-            },
+        const data = {
+            tenPhong: form.tenPhong.value,
+            loaiPhong: form.loaiPhong.value,
+            tongGhe: form.tongGhe.value,
+            branchId: branch.value
+        };
+
+        if (currentId) data.roomId = currentId;
+
+        await fetch("../../Controllers/roomController.php", {
+            method: currentId ? "PUT" : "POST",
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(data)
         });
 
-        const result = await res.json();
-        console.log("RESULT:", result);
-
-        alert(result.message);
-
         dialog.close();
-        loadRooms();
+        loadRoom(filter.value);
+    };
 
-        currentId = null;
-
-    } catch (error) {
-        console.error("Lỗi submit:", error);
-    }
-});
-   
-    loadBranches();
-    loadRooms();
+    loadBranch();
+    loadRoom();
 });

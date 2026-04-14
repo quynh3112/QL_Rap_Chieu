@@ -1,4 +1,4 @@
-<?php include "../component/header.php"; ?>
+<?php include "../component/headerAd.php"; ?>
 
 <div class="movie-page">
     <div class="search-box">

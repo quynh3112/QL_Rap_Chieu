@@ -1,5 +1,4 @@
-<?php include "../component/header.php"; ?>
-
+<?php include "../component/headerAd.php"; ?>
 <h2 class="title">🎬 Quản lý suất chiếu</h2>
 
 <!-- FILTER -->

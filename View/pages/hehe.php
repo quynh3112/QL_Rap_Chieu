@@ -10,7 +10,6 @@
         include "../component/header.php";
         ?>
         <div style="margin-top:60px">
-            <?= include "movies_user.php";?>
 
         </div>
     </body>

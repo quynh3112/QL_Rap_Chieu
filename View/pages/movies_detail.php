@@ -85,12 +85,13 @@ body {
 .back-btn:hover {
     transform: scale(1.05);
 }
+
 </style>
 
 <a href="movies_user.php" class="back-btn">← Quay lại</a>
 <script>
-const SCHEDULE_API = "/QL_Rap_Chieu/Controllers/schedules.php";
-const API = "/QL_Rap_Chieu/Controllers/movies.php";
+const SCHEDULE_API = "../../Controllers/schedules.php";
+const API = "../../Controllers/movies.php";
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
@@ -149,7 +150,7 @@ function loadSchedules(){
     fetch(SCHEDULE_API + "?movieId=" + id)
         .then(res => res.json())
         .then(data => {
-            console.log("DATA:", data); // 👈 thêm dòng này
+            console.log("DATA:", data); 
 
             let html = "";
 

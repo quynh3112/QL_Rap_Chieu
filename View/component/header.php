@@ -7,7 +7,7 @@
 
 <header>
     <div class="img">
-        <a href="home.php"><img src="../asset/cgv.png" alt=""></a>
+        <a href="hehe.php"><img src="../asset/cgv.png" alt=""></a>
     </div>
 
     <div>
@@ -35,9 +35,8 @@
     <div class='container'>
         <button><?php echo htmlspecialchars($_SESSION['user']['hoTen']); ?></button>
         <div class="dropdown">
-            <a href="">Thông tin cá nhân</a>
-            <a href="">Đăng xuất</a>
-
+            <a href="profile_customer.php">Thông tin cá nhân</a>
+            <a href="logout.php">Đăng xuất</a>
         </div>
     </div>
 <?php else: ?>

@@ -1,4 +1,4 @@
-
+<?php include "../component/header.php"; ?>
 <h2 class="title">🎬 Danh sách phim</h2>
 <div id="movieList" class="movie-list"></div>
 
@@ -74,7 +74,7 @@ body {
 </style>
 
 <script>
-const API = "/QL_Rap_Chieu/Controllers/movies.php";
+const API = "../../Controllers/movies.php";
 function getMovieStatusClass(status){
     if(status === "Sắp chiếu") return "sap";
     if(status === "Đang chiếu") return "dang";
@@ -97,7 +97,7 @@ function loadMoviesUser() {
             data.forEach(m => {
                 html += `
                 <div class="movie-card" onclick="goDetail(${m.movieId})">
-                    <img src="/QL_Rap_Chieu/uploads/${m.img}" 
+                    <img src="../../uploads/${m.img}" 
                          onerror="this.src='https://via.placeholder.com/200x260'">
 
                     <div class="movie-info">
@@ -115,7 +115,7 @@ function loadMoviesUser() {
         });
 }
 function goDetail(id){
-    window.location.href = "/QL_Rap_Chieu/View/pages/movies_detail.php?id=" + id;
+    window.location.href = "movies_detail.php?id=" + id;
 }
 loadMoviesUser();
 </script>

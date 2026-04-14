@@ -1,6 +1,6 @@
-const SCHEDULE_API = "/QL_Rap_Chieu/Controllers/schedules.php";
-const MOVIE_API = "/QL_Rap_Chieu/Controllers/movies.php";
-const ROOM_API = "/QL_Rap_Chieu/Controllers/roomController.php";
+const SCHEDULE_API = "../../Controllers/schedules.php";
+const MOVIE_API = "../../Controllers/movies.php";
+const ROOM_API = "../../Controllers/roomController.php";
 let editId = null;
 function saveSchedule(){
     if(editId){

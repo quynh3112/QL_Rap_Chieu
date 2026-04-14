@@ -8,10 +8,33 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
 
     case "GET":
+        
+
 
         $id = $_GET['workId'] ?? null;
         $accountId = $_GET['accountId'] ?? null;
         $branchId = $_GET['branchId'] ?? null;
+        $ngayLamViec = $_GET['ngayLamViec'] ?? null;
+        if ($ngayLamViec && $branchId) {
+
+        $result = $work->isDuplicate($branchId, $ngayLamViec);
+
+        if ($result->num_rows <= 0) {
+            echo json_encode([
+                "status" => false,
+                "message" => "Không có nhân viên làm ngày này"
+            ]);
+            exit;
+        }
+
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        echo json_encode($data);
+        exit;
+    }
 
         if ($id) {
             $result = $work->getById($id);
@@ -82,6 +105,10 @@ switch ($method) {
 
         if (!$accountId || !$branchId || !$ngayLamViec || !$caLam || !$gioBatDau || !$gioKetThuc) {
             echo json_encode(["status" => false, "message" => "Thiếu dữ liệu"]);
+            exit;
+        }
+        if($work->isConflictSchedule($accountId,$branchId,$ngayLamViec,$gioBatDau,$gioKetThuc)->num_rows > 0){
+            echo json_encode(["status" => false, "message" => "Lịch làm việc bị trùng"]);
             exit;
         }
 
