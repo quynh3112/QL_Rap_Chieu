@@ -35,17 +35,12 @@ if (!file_exists($headerPath)) {
         <section class="food-hero">
             <div>
                 <h1 class="food-title">Xác Nhận Thanh Toán</h1>
-                <p class="food-subtitle">Kiểm tra thông tin món ăn và vé trước khi gửi thanh toán.</p>
+                <p class="food-subtitle">Kiểm tra thông tin món ăn trước khi gửi thanh toán.</p>
             </div>
         </section>
 
         <div class="checkout-layout">
             <section class="checkout-main-card">
-                <div id="checkout-ticket-card" class="checkout-ticket-card" style="display:none;">
-                    <h3>Thông Tin Vé</h3>
-                    <div id="checkout-ticket-info"></div>
-                </div>
-
                 <div class="checkout-food-card">
                     <h3>Thông Tin Đồ Ăn</h3>
                     <div id="checkout-food-items" class="checkout-food-items">
@@ -55,11 +50,6 @@ if (!file_exists($headerPath)) {
             </section>
 
             <aside class="checkout-side-card">
-                <div class="checkout-field">
-                    <label for="checkout-booking-id">Booking</label>
-                    <input id="checkout-booking-id" type="text" readonly value="Không có">
-                </div>
-
                 <div class="checkout-field">
                     <label for="checkout-method">Phương thức thanh toán</label>
                     <select id="checkout-method">
@@ -71,10 +61,6 @@ if (!file_exists($headerPath)) {
                     <div class="checkout-total-row">
                         <span>Tiền đồ ăn</span>
                         <b id="checkout-food-total">0đ</b>
-                    </div>
-                    <div class="checkout-total-row">
-                        <span>Tiền vé</span>
-                        <b id="checkout-ticket-total">0đ</b>
                     </div>
                     <div class="checkout-total-row grand">
                         <span>Tổng thanh toán</span>

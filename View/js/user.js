@@ -328,7 +328,6 @@ async function submitBooking() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    bookingId,
                     items: foodItems.map(f => ({
                         foodId: f.data.foodId,
                         soLuong: f.qty

@@ -52,17 +52,6 @@ function parseCheckoutPayload($input) {
     // Food checkout currently supports only direct cash payment.
     $phuongThuc = 'Tiền mặt';
 
-    $bookingId = null;
-    if (array_key_exists('bookingId', $input) && $input['bookingId'] !== null && $input['bookingId'] !== '') {
-        if (!is_numeric($input['bookingId']) || (int)$input['bookingId'] <= 0) {
-            return [
-                'success' => false,
-                'message' => 'Mã booking không hợp lệ.'
-            ];
-        }
-        $bookingId = (int)$input['bookingId'];
-    }
-
     $normalizedItems = [];
     foreach ($items as $item) {
         if (!is_array($item)) {
@@ -96,7 +85,6 @@ function parseCheckoutPayload($input) {
 
     return [
         'success' => true,
-        'bookingId' => $bookingId,
         'phuongThuc' => $phuongThuc,
         'normalizedItems' => $normalizedItems
     ];
@@ -161,35 +149,10 @@ switch ($action) {
             break;
         }
 
-        $bookingId = $checkoutData['bookingId'];
         $phuongThuc = $checkoutData['phuongThuc'];
         $normalizedItems = $checkoutData['normalizedItems'];
 
         try {
-            $paymentM = new Payment($conn);
-
-            $ticketTotal = 0.0;
-            $bookingSummary = null;
-            if ($bookingId !== null) {
-                $bookingInfo = $paymentM->getBookingInfoForCheckout($bookingId, $accId, false);
-                if (!$bookingInfo) {
-                    throw new Exception('Không tìm thấy booking hợp lệ của tài khoản hiện tại.');
-                }
-
-                if ($bookingInfo['trangThai'] === 'Đã hủy') {
-                    throw new Exception('Booking đã bị hủy, không thể thanh toán kèm đồ ăn.');
-                }
-
-                $ticketTotal = (float)$bookingInfo['ticketTotal'];
-                $bookingSummary = [
-                    'bookingId' => (int)$bookingInfo['bookingId'],
-                    'soLuongVe' => (int)$bookingInfo['soLuong'],
-                    'giaVe' => (float)$bookingInfo['giaVe'],
-                    'tongTienVe' => $ticketTotal,
-                    'trangThai' => $bookingInfo['trangThai']
-                ];
-            }
-
             $selectFoodSql = "SELECT foodId, tenFood, gia, soLuongTon, trangThai
                               FROM Food
                               WHERE foodId = ?
@@ -245,16 +208,14 @@ switch ($action) {
                 throw new Exception('Tổng tiền đồ ăn không hợp lệ.');
             }
 
-            $paymentTotal = $foodTotal + $ticketTotal;
+            $paymentTotal = $foodTotal;
             if ($paymentTotal <= 0) {
                 throw new Exception('Tổng thanh toán không hợp lệ.');
             }
 
             foodRespond(true, 'Lấy thông tin thanh toán thành công.', [
                 'items' => $previewItems,
-                'booking' => $bookingSummary,
                 'tongTienFood' => $foodTotal,
-                'tongTienVe' => $ticketTotal,
                 'tongTienThanhToan' => $paymentTotal,
                 'phuongThuc' => $phuongThuc
             ]);
@@ -279,7 +240,6 @@ switch ($action) {
             break;
         }
 
-        $bookingId = $checkoutData['bookingId'];
         $phuongThuc = $checkoutData['phuongThuc'];
         $normalizedItems = $checkoutData['normalizedItems'];
         
@@ -289,18 +249,6 @@ switch ($action) {
             $orderM = new FoodOrder($conn);
             $detailM = new FoodOrderDetail($conn);
             $paymentM = new Payment($conn);
-
-            $ticketTotal = 0.0;
-            if ($bookingId !== null) {
-                $bookingInfo = $paymentM->getBookingInfoForCheckout($bookingId, $accId, true);
-                if (!$bookingInfo) {
-                    throw new Exception('Không tìm thấy booking hợp lệ của tài khoản hiện tại.');
-                }
-                if ($bookingInfo['trangThai'] === 'Đã hủy') {
-                    throw new Exception('Booking đã bị hủy, không thể thanh toán kèm đồ ăn.');
-                }
-                $ticketTotal = (float)$bookingInfo['ticketTotal'];
-            }
             
             $selectFoodSql = "SELECT foodId, tenFood, gia, soLuongTon, trangThai
                               FROM Food
@@ -361,7 +309,7 @@ switch ($action) {
                 throw new Exception('Tổng tiền đồ ăn không hợp lệ.');
             }
             
-            $orderId = $orderM->create($accId, $bookingId, $foodTotal);
+            $orderId = $orderM->create($accId, null, $foodTotal);
             if (!$orderId) {
                 throw new Exception('Không thể tạo đơn đồ ăn. Vui lòng thử lại.');
             }
@@ -382,12 +330,12 @@ switch ($action) {
                 }
             }
 
-            $paymentTotal = $foodTotal + $ticketTotal;
+            $paymentTotal = $foodTotal;
             if ($paymentTotal <= 0) {
                 throw new Exception('Tổng thanh toán không hợp lệ.');
             }
 
-            $paymentId = $paymentM->create($bookingId, $orderId, $paymentTotal, $phuongThuc);
+            $paymentId = $paymentM->create(null, $orderId, $paymentTotal, $phuongThuc);
             if (!$paymentId) {
                 throw new Exception('Không thể tạo thanh toán cho đơn đồ ăn.');
             }
@@ -397,9 +345,7 @@ switch ($action) {
             foodRespond(true, 'Đặt món thành công. Đơn hàng đang chờ xác nhận.', [
                 'foodOrderId' => (int)$orderId,
                 'paymentId' => (int)$paymentId,
-                'bookingId' => $bookingId,
                 'tongTienFood' => $foodTotal,
-                'tongTienVe' => $ticketTotal,
                 'tongTienThanhToan' => $paymentTotal,
                 'phuongThuc' => $phuongThuc,
                 'trangThaiThanhToan' => 'Chờ xác nhận'

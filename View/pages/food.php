@@ -40,7 +40,7 @@ if (!file_exists($headerPath)) {
         <section class="food-hero">
             <div>
                 <h1 class="food-title">Bắp Nước Tại Rạp</h1>
-                <p class="food-subtitle">Chọn món và phương thức thanh toán, sau đó chuyển sang trang xác nhận đơn.</p>
+                <p class="food-subtitle">Chọn món và phương thức thanh toán để mua đồ ăn riêng tại rạp.</p>
             </div>
         </section>
 
@@ -52,11 +52,6 @@ if (!file_exists($headerPath)) {
             <div class="cart-sidebar">
                 <h3 class="cart-title">Giỏ Hàng</h3>
                 <div id="cart-content"><p>Giỏ hàng đang trống.</p></div>
-
-                <div class="checkout-field">
-                    <label for="booking-id">Mã booking (để trống nếu mua lẻ)</label>
-                    <input type="number" id="booking-id" min="1" placeholder="Ví dụ: 12">
-                </div>
 
                 <div class="checkout-field">
                     <label for="payment-method">Phương thức thanh toán</label>

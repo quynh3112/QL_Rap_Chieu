@@ -7,21 +7,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
 
     case 'GET':
-        $bookingId  = intval($_GET['bookingId']  ?? 0);
         $accountId  = intval($_GET['accountId']  ?? 0);
-
-        if ($bookingId) {
-            // Chi tiết đồ ăn của 1 booking
-            $res  = $conn->query("SELECT fo.*, fod.*, f.tenFood, f.loaiFood
-                                  FROM FoodOrder fo
-                                  JOIN FoodOrderDetail fod ON fod.foodOrderId = fo.foodOrderId
-                                  JOIN Food f ON f.foodId = fod.foodId
-                                  WHERE fo.bookingId = $bookingId");
-            $data = [];
-            while ($row = $res->fetch_assoc()) $data[] = $row;
-            echo json_encode($data);
-            break;
-        }
         if ($accountId) {
             $res  = $conn->query("SELECT fo.* FROM FoodOrder fo
                                   WHERE fo.accountId = $accountId
@@ -43,7 +29,6 @@ switch ($method) {
     case 'POST':
         $d         = json_decode(file_get_contents("php://input"), true);
         $accountId = intval($d['accountId'] ?? 0);
-        $bookingId = intval($d['bookingId'] ?? 0);
         $items     = $d['items'] ?? [];   // [{foodId, soLuong, gia}]
 
         if (!$accountId || empty($items)) {
@@ -80,9 +65,8 @@ switch ($method) {
         $conn->begin_transaction();
 
         try {
-            $bkVal = $bookingId ? $bookingId : 'NULL';
             $ok = $conn->query("INSERT INTO FoodOrder (accountId, bookingId, tongTienFood, trangThai)
-                                VALUES ($accountId, $bkVal, $tongTien, 'Chờ xác nhận')");
+                                VALUES ($accountId, NULL, $tongTien, 'Chờ xác nhận')");
             if (!$ok) {
                 throw new Exception('Tạo FoodOrder thất bại');
             }

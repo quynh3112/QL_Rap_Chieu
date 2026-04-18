@@ -250,7 +250,7 @@ async function xacNhanDatVe() {
                 method : 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body   : JSON.stringify({
-                    accountId: nvUser.accountId, bookingId,
+                    accountId: nvUser.accountId,
                     items: foodItems.map(f => ({ foodId: f.data.foodId, soLuong: f.qty, gia: f.data.gia }))
                 })
             });

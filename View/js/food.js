@@ -53,7 +53,6 @@ function clearCheckoutDraft() {
 
 function buildOrderPayloadFromDraft(draft) {
     return {
-        bookingId: draft.bookingId ?? null,
         phuongThuc: draft.phuongThuc,
         items: draft.items.map(item => ({
             foodId: item.foodId,
@@ -62,31 +61,7 @@ function buildOrderPayloadFromDraft(draft) {
     };
 }
 
-function getBookingIdInput() {
-    const bookingInput = document.getElementById('booking-id');
-    if (!bookingInput) {
-        return { bookingId: null, error: null };
-    }
-
-    const raw = bookingInput.value.trim();
-    if (raw === '') {
-        return { bookingId: null, error: null };
-    }
-
-    const parsed = Number(raw);
-    if (!Number.isInteger(parsed) || parsed <= 0) {
-        return { bookingId: null, error: 'Mã booking phải là số nguyên dương.' };
-    }
-
-    return { bookingId: parsed, error: null };
-}
-
 function getCheckoutDraftFromCurrentCart() {
-    const bookingInfo = getBookingIdInput();
-    if (bookingInfo.error) {
-        return { draft: null, error: bookingInfo.error };
-    }
-
     const methodSelect = document.getElementById('payment-method');
     const phuongThuc = methodSelect ? methodSelect.value : '';
     if (!phuongThuc) {
@@ -118,7 +93,6 @@ function getCheckoutDraftFromCurrentCart() {
 
     return {
         draft: {
-            bookingId: bookingInfo.bookingId,
             phuongThuc,
             items
         },
@@ -305,11 +279,6 @@ function restoreCartFromCheckoutDraftIfNeeded() {
         soLuong: Number(item.soLuong) || 0
     })).filter(item => item.foodId > 0 && item.soLuong > 0 && item.price > 0);
 
-    const bookingInput = document.getElementById('booking-id');
-    if (bookingInput) {
-        bookingInput.value = draft.bookingId ? String(draft.bookingId) : '';
-    }
-
     const methodSelect = document.getElementById('payment-method');
     if (methodSelect && draft.phuongThuc) {
         methodSelect.value = draft.phuongThuc;
@@ -318,16 +287,12 @@ function restoreCartFromCheckoutDraftIfNeeded() {
     renderCart();
 }
 
-function renderCheckoutPreview(draft, previewData) {
-    const ticketCard = document.getElementById('checkout-ticket-card');
-    const ticketInfo = document.getElementById('checkout-ticket-info');
+function renderCheckoutPreview(previewData) {
     const itemsWrap = document.getElementById('checkout-food-items');
     const foodTotalEl = document.getElementById('checkout-food-total');
-    const ticketTotalEl = document.getElementById('checkout-ticket-total');
     const paymentTotalEl = document.getElementById('checkout-payment-total');
-    const bookingInput = document.getElementById('checkout-booking-id');
 
-    if (!itemsWrap || !foodTotalEl || !ticketTotalEl || !paymentTotalEl) {
+    if (!itemsWrap || !foodTotalEl || !paymentTotalEl) {
         return;
     }
 
@@ -346,28 +311,7 @@ function renderCheckoutPreview(draft, previewData) {
         `).join('');
     }
 
-    const booking = previewData ? previewData.booking : null;
-    if (ticketCard && ticketInfo) {
-        if (booking) {
-            ticketCard.style.display = 'block';
-            ticketInfo.innerHTML = `
-                <p><b>Mã booking:</b> #${booking.bookingId}</p>
-                <p><b>Số lượng vé:</b> ${booking.soLuongVe}</p>
-                <p><b>Giá vé:</b> ${formatCurrency(booking.giaVe)}</p>
-                <p><b>Trạng thái booking:</b> ${booking.trangThai}</p>
-            `;
-        } else {
-            ticketCard.style.display = 'none';
-            ticketInfo.innerHTML = '';
-        }
-    }
-
-    if (bookingInput) {
-        bookingInput.value = draft.bookingId ? String(draft.bookingId) : 'Không có';
-    }
-
     foodTotalEl.textContent = formatCurrency(previewData ? previewData.tongTienFood : 0);
-    ticketTotalEl.textContent = formatCurrency(previewData ? previewData.tongTienVe : 0);
     paymentTotalEl.textContent = formatCurrency(previewData ? previewData.tongTienThanhToan : 0);
 }
 
@@ -379,7 +323,7 @@ async function loadCheckoutPreview() {
         if (confirmBtn) {
             confirmBtn.disabled = true;
         }
-        renderCheckoutPreview({ bookingId: null }, null);
+        renderCheckoutPreview(null);
         return;
     }
 
@@ -406,7 +350,7 @@ async function loadCheckoutPreview() {
             }
 
             setCheckoutMessage(message, 'error');
-            renderCheckoutPreview(draft, null);
+            renderCheckoutPreview(null);
             return;
         }
 
@@ -418,7 +362,7 @@ async function loadCheckoutPreview() {
             methodSelect.value = draft.phuongThuc;
         }
 
-        renderCheckoutPreview(draft, result.data);
+        renderCheckoutPreview(result.data);
         setCheckoutMessage(getApiMessage(result, 'Thông tin thanh toán đã sẵn sàng.'), 'success');
     } catch (error) {
         console.error('Lỗi preview checkout:', error);
@@ -494,14 +438,6 @@ async function submitCheckoutOrder() {
 }
 
 function initializeFoodPage() {
-    const params = new URLSearchParams(window.location.search);
-    const bookingIdFromUrl = params.get('bookingId');
-    const bookingInput = document.getElementById('booking-id');
-
-    if (bookingInput && bookingIdFromUrl && /^\d+$/.test(bookingIdFromUrl)) {
-        bookingInput.value = bookingIdFromUrl;
-    }
-
     restoreCartFromCheckoutDraftIfNeeded();
     renderCart();
     loadFoodUser();
