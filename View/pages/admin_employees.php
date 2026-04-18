@@ -5,6 +5,7 @@ $isAdmin = ($isLoggedIn && $_SESSION['user']['role'] === 'Admin');
 // Test khi là Admin:
 // $isLoggedIn = true; 
 // $isAdmin = true;
+include "../component/headerAd.php";
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -18,7 +19,7 @@ $isAdmin = ($isLoggedIn && $_SESSION['user']['role'] === 'Admin');
         .search-box { background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #dee2e6; }
     </style>
 </head>
-<body class="bg-black text-white">
+<body class="bg-black text-black">
 
     <div class="container py-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
