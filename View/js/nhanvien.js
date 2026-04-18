@@ -1,4 +1,4 @@
-const BASE = 'http://localhost/QL_Rap_Chieu/Controllers';
+const BASE = '../../Controllers';
 
 function getStoredUser() {
     const parseUser = (raw) => {
@@ -134,11 +134,12 @@ async function selectSchedule(sch) {
 // BƯỚC 3
 async function loadSeatMap(roomId, scheduleId) {
     const [seatRes, takenRes] = await Promise.all([
-        fetch(`${BASE}/roomController.php?seats=${roomId}`),
+        fetch(`${BASE}/seatController.php?roomId=${roomId}`),
         fetch(`${BASE}/bookingController.php?action=ghe_da_dat&scheduleId=${scheduleId}`)
     ]);
     const seatJson = await seatRes.json();
-    const allSeats = seatJson.data || [];
+        const allSeats = seatJson.data || seatJson;
+
     const takenIds = (await takenRes.json()).map(String);
 
     const rows = {};

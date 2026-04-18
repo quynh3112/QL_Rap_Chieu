@@ -228,13 +228,16 @@ async function loadFood() {
 }
 
 function changeFood(foodId, delta, btn) {
-    const raw = btn.dataset.food;
-
-    const food = JSON.parse(decodeURIComponent(raw)); // 👈 FIX
-
+    const food = JSON.parse(btn.dataset.food);
     if (!state.foods[foodId]) state.foods[foodId] = { data: food, qty: 0 };
-    state.foods[foodId].qty = Math.max(0, state.foods[foodId].qty + delta);
 
+    const maxStock = Number(food.soLuongTon) || 0;
+    if (delta > 0 && state.foods[foodId].qty >= maxStock) {
+        alert('Số lượng chọn đã đạt giới hạn tồn kho.');
+        return;
+    }
+
+    state.foods[foodId].qty = Math.max(0, state.foods[foodId].qty + delta);
     document.getElementById('qty-' + foodId).textContent = state.foods[foodId].qty;
     updateFoodTotal();
 }
