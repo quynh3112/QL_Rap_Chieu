@@ -1,3 +1,18 @@
+<?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once '../../Controllers/auth.php';
+
+checkAuth(['Admin']);
+$currentRole = $_SESSION['user']['role'] ?? '';
+
+
+
+?>
+
 <?php include "../component/headerAd.php"; ?>
 
 <div class="movie-page">

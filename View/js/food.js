@@ -128,7 +128,7 @@ async function loadFoodUser() {
     }
 
     try {
-        const res = await fetch('/QL_Rap_Chieu/Controllers/foodController.php?action=list_all');
+        const res = await fetch('../../Controllers/foodController.php?action=list_all');
         const json = await parseApiResponse(res);
 
         if (!res.ok || !json || json.success !== true) {
@@ -239,7 +239,7 @@ function placeOrder() {
     }
 
     saveCheckoutDraft(checkoutResult.draft);
-    window.location.href = '/QL_Rap_Chieu/View/pages/food_checkout.php';
+    window.location.href = '../../View/pages/food_checkout.php';
 }
 
 // Hàm xóa món khỏi giỏ hàng
@@ -363,7 +363,7 @@ async function loadCheckoutPreview() {
 
             if (response.status === 401) {
                 setCheckoutMessage('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.', 'error');
-                window.location.href = '/QL_Rap_Chieu/View/pages/login.php';
+                window.location.href = '../../View/pages/login.php';
                 return;
             }
 
@@ -408,7 +408,7 @@ async function submitCheckoutOrder() {
     }
 
     try {
-        const response = await fetch('/QL_Rap_Chieu/Controllers/foodController.php?action=place_order', {
+        const response = await fetch('../../Controllers/foodController.php?action=place_order', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -423,7 +423,7 @@ async function submitCheckoutOrder() {
 
             if (response.status === 401) {
                 setCheckoutMessage('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.', 'error');
-                window.location.href = '/QL_Rap_Chieu/View/pages/login.php';
+                window.location.href = '../../View/pages/login.php';
                 return;
             }
 
@@ -443,7 +443,7 @@ async function submitCheckoutOrder() {
 
         clearCheckoutDraft();
         alert(successMsg);
-        window.location.href = '/QL_Rap_Chieu/View/pages/home.php';
+        window.location.href = '../../View/pages/home.php';
     } catch (error) {
         console.error('Lỗi checkout:', error);
         setCheckoutMessage('Không thể kết nối tới máy chủ. Vui lòng thử lại.', 'error');

@@ -1,3 +1,14 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once '../../Controllers/auth.php';
+
+checkAuth(['Admin']);
+
+$currentRole = $_SESSION['user']['role'] ?? '';
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>

@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,5 +12,6 @@
         <?php
         include "../component/headerAd.php"
         ?>
+        <?php include "scheduleWork.php"?>
     </body>
 </html>

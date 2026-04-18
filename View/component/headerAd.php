@@ -20,7 +20,7 @@
 
     </div>
     <div class="logo">
-        <img src="../asset/cgv.png" alt="">
+       <a href="homeQL.php"> <img src="../asset/cgv.png" alt=""></a>
     </div>
     <div class="account">
         <?php if(

@@ -1,11 +1,11 @@
-const BASE = 'http://localhost/QL_Merged/Controllers';
+const BASE = '../../Controllers';
 
 // Thông tin thanh toán - SỬA STK VÀ NGÂN HÀNG CỦA BẠN
 const STK       = '1234567890';
 const NGAN_HANG = 'MBBank';
 
 const state = {
-    user      : JSON.parse(sessionStorage.getItem('user') || 'null'),
+    user      : JSON.parse(localStorage.getItem('user') || 'null'),
     movie     : null,
     schedule  : null,
     seats     : [],
@@ -49,7 +49,7 @@ function filterMovies() {
 function renderMovies(list) {
     document.getElementById('movie-list').innerHTML = list.map(m => `
         <div class="card" onclick="selectMovie(${JSON.stringify(m).replace(/"/g,'&quot;')})">
-            <img src="${m.img || ''}" onerror="this.style.display='none'" style="width:100%;height:120px;object-fit:cover"/>
+            <img src="../../uploads/${m.img || ''}" onerror="this.style.display='none'" style="width:100%;height:120px;object-fit:cover"/>
             <div style="padding:6px">
                 <strong>${m.tenPhim}</strong><br/>
                 <small>${m.trangThai}</small><br/>
@@ -112,12 +112,13 @@ async function selectSchedule(sch) {
 // ── BƯỚC 3: GHẾ ─────────────────────────────────────────────
 async function loadSeatMap(roomId, scheduleId) {
     const [seatRes, takenRes] = await Promise.all([
-        fetch(`${BASE}/roomController.php?seats=${roomId}`),
+        fetch(`${BASE}/seatController.php?roomId=${roomId}`),
         fetch(`${BASE}/bookingController.php?action=ghe_da_dat&scheduleId=${scheduleId}`)
     ]);
 
     const seatJson = await seatRes.json();
-    const allSeats = seatJson.data || [];
+
+    const allSeats = seatJson.data || seatJson;
     const takenRaw = await takenRes.json();
     // Ép kiểu về string để so sánh chắc chắn
     const takenIds = (Array.isArray(takenRaw) ? takenRaw : []).map(String);
@@ -169,19 +170,23 @@ function updateSeatSummary() {
 
 // ── BƯỚC 4: ĐỒ ĂN ───────────────────────────────────────────
 async function loadFood() {
-    const res  = await fetch(`${BASE}/foodController.php`);
+    const res  = await fetch(`${BASE}/foodController.php?action=list_all`);
     const data = await res.json();
 
-    document.getElementById('food-list').innerHTML = data.map(f => `
+    console.log("FOOD:", data);
+
+    const list = data.data || []; // 👈 vì backend trả { success, data }
+
+    document.getElementById('food-list').innerHTML = list.map(f => `
         <div class="card">
             <div style="padding:6px">
                 <strong>${f.tenFood}</strong><br/>
                 <small>${f.loaiFood}</small><br/>
                 <span>${fmt(f.gia)}</span>
                 <div class="qty-row">
-                    <button onclick="changeFood(${f.foodId},-1,this)" data-food='${JSON.stringify(f)}'>-</button>
+                    <button onclick="changeFood(${f.foodId},-1,this)" data-food='${encodeURIComponent(JSON.stringify(f))}'>-</button>
                     <span id="qty-${f.foodId}">${state.foods[f.foodId]?.qty || 0}</span>
-                    <button onclick="changeFood(${f.foodId},1,this)" data-food='${JSON.stringify(f)}'>+</button>
+                    <button onclick="changeFood(${f.foodId},1,this)" data-food='${encodeURIComponent(JSON.stringify(f))}'>+</button>
                 </div>
             </div>
         </div>
@@ -229,64 +234,90 @@ function buildConfirm() {
 
 async function submitBooking() {
     const btn = document.getElementById('btn-submit');
-    btn.disabled    = true;
+    btn.disabled = true;
     btn.textContent = 'Đang xử lý...';
 
     try {
-        const bRes = await fetch(`${BASE}/bookingController.php`, {
-            method : 'POST',
+        const res = await fetch(`${BASE}/bookingController.php`, {
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body   : JSON.stringify({
-                accountId  : state.user.accountId,
-                scheduleId : state.schedule.scheduleId,
-                seatIds    : state.seats.map(s => s.seatId),
-                trangThai  : 'Đã xác nhận'
+            body: JSON.stringify({
+                accountId: state.user?.accountId,
+                scheduleId: state.schedule?.scheduleId,
+                seatIds: state.seats.map(s => s.seatId),
+                trangThai: 'Đã xác nhận'
             })
         });
-        const bResult = await bRes.json();
+
+        // 🔥 đọc text trước để debug
+        const text = await res.text();
+        console.log("BOOKING RAW:", text);
+
+        let bResult;
+        try {
+            bResult = JSON.parse(text);
+        } catch (e) {
+            alert("Server trả về lỗi (không phải JSON)");
+            console.error("JSON parse lỗi:", e);
+            return;
+        }
+
+        // ❌ check HTTP status
+        if (!res.ok) {
+            alert("Server lỗi HTTP: " + res.status);
+            console.error(bResult);
+            return;
+        }
 
         if (!bResult.status) {
             if (bResult.gheTrung) {
-                alert(`Ghế ${bResult.gheTrung.join(', ')} vừa bị người khác đặt!\nVui lòng chọn lại ghế.`);
+                alert(`Ghế ${bResult.gheTrung.join(', ')} vừa bị người khác đặt!`);
                 state.seats = [];
                 await loadSeatMap(state.schedule.roomId, state.schedule.scheduleId);
                 showTab('seat');
             } else {
-                alert(bResult.message);
+                alert(bResult.message || "Đặt vé thất bại");
+                console.error(bResult);
             }
             return;
         }
 
         const bookingId = bResult.bookingId;
 
-        // Đặt đồ ăn nếu có
+        // ── ĐẶT ĐỒ ĂN ─────────────────────
         const foodItems = Object.values(state.foods).filter(f => f.qty > 0);
+
         if (foodItems.length > 0) {
-            await fetch(`${BASE}/foodOrderController.php`, {
-                method : 'POST',
+            const foodRes = await fetch(`${BASE}/foodController.php?action=place_order`, {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body   : JSON.stringify({
-                    accountId : state.user.accountId,
+                body: JSON.stringify({
                     bookingId,
-                    items     : foodItems.map(f => ({ foodId: f.data.foodId, soLuong: f.qty, gia: f.data.gia }))
+                    items: foodItems.map(f => ({
+                        foodId: f.data.foodId,
+                        soLuong: f.qty
+                    }))
                 })
             });
+
+            const foodText = await foodRes.text();
+            console.log("FOOD RAW:", foodText);
         }
 
-        alert(`Đặt vé và thanh toán thành công! Mã booking: #${bookingId}`);
+        alert(`Đặt vé thành công! Mã booking: #${bookingId}`);
+
         state.seats = [];
         state.foods = {};
         showTab('movies');
 
     } catch (err) {
-        alert('Lỗi kết nối server.');
-        console.error(err);
+        console.error("FETCH ERROR:", err);
+        alert("Không kết nối được server");
     } finally {
-        btn.disabled    = false;
+        btn.disabled = false;
         btn.textContent = 'Xác nhận đặt vé';
     }
 }
-
 // ── LỊCH SỬ ─────────────────────────────────────────────────
 async function loadHistory() {
     const res  = await fetch(`${BASE}/bookingController.php?accountId=${state.user.accountId}`);
@@ -305,6 +336,6 @@ async function loadHistory() {
 }
 
 function logout() {
-    sessionStorage.removeItem('user');
+   localStorage.removeItem('user');
     window.location.href = 'login.php';
 }

@@ -144,15 +144,17 @@ class Booking {
     }
 
     // Tạo booking với tenKhach và trangThai tùy chỉnh (dùng cho nhân viên)
-    public function createWithStatus($accountId, $scheduleId, $soLuong, $tenKhach = '', $trangThai = 'Chờ thanh toán') {
-        global $conn;
-        $sql  = "INSERT INTO Booking (accountId, scheduleId, soLuong, tenKhach, trangThai) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $tk   = $tenKhach ?: null;
-        $stmt->bind_param("iiiss", $accountId, $scheduleId, $soLuong, $tk, $trangThai);
-        if ($stmt->execute()) {
-            return $conn->insert_id;
-        }
-        return false;
+  public function createWithStatus($accountId, $scheduleId, $soLuong, $trangThai = 'Chờ thanh toán') {
+    global $conn;
+
+    $sql  = "INSERT INTO Booking (accountId, scheduleId, soLuong, trangThai) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bind_param("iiis", $accountId, $scheduleId, $soLuong, $trangThai);
+
+    if ($stmt->execute()) {
+        return $conn->insert_id;
     }
+    return false;
+}
 }

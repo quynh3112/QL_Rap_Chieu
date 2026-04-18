@@ -1,5 +1,6 @@
-const BASE = 'http://localhost/QL_Merged/Controllers';
-const adminUser = JSON.parse(sessionStorage.getItem('user') || 'null');
+const BASE = '../../Controllers';
+const adminUser =localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+
 
 document.addEventListener('DOMContentLoaded', () => {
     if (!adminUser) { window.location.href = 'login.php'; return; }
@@ -12,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function adminLogout() {
-    sessionStorage.removeItem('user');
+    localStorage.removeItem('user');
     window.location.href = 'login.php';
 }
 

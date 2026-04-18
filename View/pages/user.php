@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -84,7 +87,9 @@
         <tbody id="tbody-history"></tbody>
     </table>
 </div>
-
+<script>
+localStorage.setItem('user', JSON.stringify(<?php echo isset($_SESSION['user']) ? json_encode($_SESSION['user']) : 'null'; ?>));
+</script>
 <script src="../js/user.js"></script>
 </body>
 </html>

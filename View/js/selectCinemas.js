@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const img=document.createElement('img')
             const duration=document.createElement('h5')
             title.textContent=f.tenPhim
-            img.src=f.img
+            img.src=`../../uploads/${f.img}`
             duration.textContent=`Thời Lượng: ${f.thoiLuong}`
             item.append(img,title,duration)
             films.appendChild(item)

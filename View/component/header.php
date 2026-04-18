@@ -27,6 +27,9 @@
                     <a href="cinemasVip.php">Rạp 3D</a>
                 </div>
             </li>
+            <li class="container">
+                <h2 onclick="window.location.href='food.php'"><i class="fa-solid fa-utensils"></i> Đồ ăn</h2>
+            </li>
         </ul>
     </div>
 

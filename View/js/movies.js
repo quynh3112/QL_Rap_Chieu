@@ -18,7 +18,7 @@ function loadMovies() {
                     <td>${m.tenPhim}</td>
                     <td>${m.thoiLuong}</td>
                     <td>${m.moTa ?? ""}</td>
-                    <td>${m.img ? `<img src="/QL_Rap_Chieu/uploads/${m.img}" width="60">` : "Không có"}</td>
+                    <td>${m.img ? `<img src="../../uploads/${m.img}" width="60">` : "Không có"}</td>
                     <td>${m.daoDien ?? ""}</td>
                     <td>${m.dienVien ?? ""}</td>
                     <td>${m.namSanXuat}</td>
@@ -192,7 +192,7 @@ function searchMovie() {
                     <td>${m.tenPhim}</td>
                     <td>${m.thoiLuong}</td>
                     <td>${m.moTa ?? ""}</td>
-                    <td>${m.img ? `<img src="/QL_Rap_Chieu/uploads/${m.img}" width="60">` : "Không có"}</td>
+                    <td>${m.img ? `<img src="../../uploads/${m.img}" width="60">` : "Không có"}</td>
                     <td>${m.daoDien ?? ""}</td>
                     <td>${m.dienVien ?? ""}</td>
                     <td>${m.namSanXuat}</td>
@@ -226,7 +226,7 @@ function autoFilter() {
                     <td>${m.tenPhim}</td>
                     <td>${m.thoiLuong}</td>
                     <td>${m.moTa ?? ""}</td>
-                    <td>${m.img ? `<img src="/QL_Rap_Chieu/uploads/${m.img}" width="60">` : "Không có"}</td>
+                    <td>${m.img ? `<img src="../../uploads/${m.img}" width="60">` : "Không có"}</td>
                     <td>${m.daoDien ?? ""}</td>
                     <td>${m.dienVien ?? ""}</td>
                     <td>${m.namSanXuat}</td>

@@ -1,6 +1,5 @@
 let currentDate = new Date();
 let schedules = {};
-
 function formatDate(date) {
   const d = new Date(date);
   return d.getFullYear() + "-" +
@@ -21,25 +20,25 @@ function getWeekDates(date) {
 }
 async function loadSchedules( account_id) {
   try {
-    const res = await fetch(`../Controller/workScheduleController.php?account_id=${account_id}`);
+    const res = await fetch(`../../Controllers/workSchedule.php?accountId=${encodeURIComponent(account_id)}`);
     const data = await res.json();
 
     schedules = {};
 
     data.forEach(item => {
-      const key = formatDate(item.work_date);
+      const key = formatDate(item.ngayLamViec);
 
       if (!schedules[key]) {
         schedules[key] = [];
       }
 
       schedules[key].push({
-        time: item.start_time + " - " + item.end_time,
-        job: item.note || item.shift
+        time: item.gioBatDau+ " - " + item.gioKetThuc,
+        job: item.caLam
       });
     });
 
-    console.log("Schedules:", schedules); // debug
+    console.log("Schedules:", schedules);
 
     renderAll();
   } catch (err) {
@@ -117,4 +116,4 @@ function nextWeek() {
   renderAll();
 }
 
-loadSchedules();
+loadSchedules(accountId);

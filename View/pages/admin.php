@@ -1,4 +1,7 @@
-:<!DOCTYPE html>
+<?php
+session_start();
+?>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8"/>
@@ -233,6 +236,13 @@
     <br/><br/>
     <button onclick="document.getElementById('dlg-qr').close()">Đóng</button>
 </dialog>
+<script>
+     localStorage.setItem('user', JSON.stringify({
+    id: <?= $_SESSION['user']['accountId'] ?? 'null' ?>,
+    hoTen: "<?= $_SESSION['user']['hoTen'] ?? '' ?>",
+    role: "<?= $_SESSION['user']['role'] ?? '' ?>"
+  }));
+</script>
 
 <script src="../js/admin.js"></script>
 </body>
