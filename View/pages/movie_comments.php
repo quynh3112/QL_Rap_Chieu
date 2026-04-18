@@ -76,9 +76,9 @@
 .comments-container { max-width: 900px; margin: 0 auto 40px auto; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); padding: 25px; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.4); color: #fff; }
 .comment-box, .comment-item { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
 .comment-item { margin-bottom: 15px; }
-.star-rating, .star-selection .star-btn, .edit-star-btn { color: #ffc107; cursor: pointer; transition: 0.2s; }
-.star-btn, .edit-star-btn { color: #444; font-size: 1.1rem; margin-right: 2px; }
-.star-btn.active, .edit-star-btn.active { color: #ffc107; }
+.star-rating { color: #ffc107; }
+.star-btn, .edit-star-btn { color: #555; font-size: 1.2rem; margin-right: 2px; cursor: pointer; transition: 0.2s; }
+.star-btn.active, .edit-star-btn.active { color: #ffc107 !important; }
 .comment-date { font-size: 0.8rem; color: #aaa; }
 </style>
 
