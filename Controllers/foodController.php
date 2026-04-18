@@ -40,40 +40,6 @@ function foodRespond($success, $message, $data = null, $httpCode = 200) {
     echo json_encode($response);
 }
 
-function normalizeTextForCompare($value) {
-    $value = trim((string)$value);
-    if ($value === '') {
-        return '';
-    }
-
-    $lower = function_exists('mb_strtolower') ? mb_strtolower($value, 'UTF-8') : strtolower($value);
-    $ascii = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $lower);
-    if ($ascii === false || $ascii === '') {
-        $ascii = $lower;
-    }
-
-    $ascii = str_replace('đ', 'd', strtolower($ascii));
-    return preg_replace('/[^a-z0-9]+/', '', $ascii);
-}
-
-function normalizePaymentMethod($rawMethod) {
-    $compact = normalizeTextForCompare($rawMethod);
-    if ($compact === '') {
-        return 'Tiền mặt';
-    }
-
-    $cashAliases = ['tienmat', 'cash', 'tm', 'tinmt', 'tienmt', 'tienma'];
-    if (
-        in_array($compact, $cashAliases, true) ||
-        str_contains($compact, 'cash') ||
-        (str_contains($compact, 'tien') && str_contains($compact, 'mat'))
-    ) {
-        return 'Tiền mặt';
-    }
-
-    return null;
-}
-
 function parseCheckoutPayload($input) {
     $items = $input['items'] ?? [];
     if (!is_array($items) || count($items) === 0) {
@@ -145,17 +111,6 @@ switch ($action) {
         $data = [];
         if ($res) { while($row = $res->fetch_assoc()) { $data[] = $row; } }
         foodRespond(true, 'Lấy danh sách món thành công', $data);
-        break;
-
-    case 'list_orders':
-        //nhân viên, quản lý mới xem được
-        checkAuth(['Admin', 'Manager', 'Employee']);
-        
-        $orderM = new FoodOrder($conn);
-        $res = $orderM->getAll();
-        $data = [];
-        if ($res) { while($row = $res->fetch_assoc()) { $data[] = $row; } }
-        foodRespond(true, 'Lấy danh sách đơn đồ ăn thành công', $data);
         break;
 
     case 'save':

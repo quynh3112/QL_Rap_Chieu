@@ -32,20 +32,6 @@ switch ($action) {
         ]);
         break;
 
-    case 'list_all':
-        checkAuth(['Admin', 'Manager', 'Employee']);
-
-        $status = $_GET['status'] ?? null;
-        if ($status === '') {
-            $status = null;
-        }
-
-        paymentRespond(true, 'Lấy danh sách thanh toán thành công', [
-            'payments' => $paymentM->getByStatus($status),
-            'currentRole' => $_SESSION['user']['role'] ?? ''
-        ]);
-        break;
-
     case 'approve':
         checkAuth(['Admin', 'Manager']);
         handlePaymentDecision($conn, $paymentM, $foodOrderM, $input, true);
