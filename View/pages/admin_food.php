@@ -66,8 +66,8 @@ $currentRole = $_SESSION['user']['role'] ?? '';
                     <option value="Nước">Nước</option>
                     <option value="Combo">Combo</option>
                 </select>
-                <label>Giá bán:</label> <input type="number" id="input-gia">
-                <label>Số lượng tồn:</label> <input type="number" id="input-soLuongTon">
+                <label>Giá bán:</label> <input type="number" id="input-gia" min="1" step="1000">
+                <label>Số lượng tồn:</label> <input type="number" id="input-soLuongTon" min="0" step="1">
                 <button class="btn-save" onclick="saveFood()">LƯU LẠI</button>
                 <button class="btn-cancel" onclick="closeModal()">HỦY</button>
             </div>

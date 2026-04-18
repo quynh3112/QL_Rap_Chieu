@@ -40,40 +40,6 @@ function foodRespond($success, $message, $data = null, $httpCode = 200) {
     echo json_encode($response);
 }
 
-function normalizeTextForCompare($value) {
-    $value = trim((string)$value);
-    if ($value === '') {
-        return '';
-    }
-
-    $lower = function_exists('mb_strtolower') ? mb_strtolower($value, 'UTF-8') : strtolower($value);
-    $ascii = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $lower);
-    if ($ascii === false || $ascii === '') {
-        $ascii = $lower;
-    }
-
-    $ascii = str_replace('đ', 'd', strtolower($ascii));
-    return preg_replace('/[^a-z0-9]+/', '', $ascii);
-}
-
-function normalizePaymentMethod($rawMethod) {
-    $compact = normalizeTextForCompare($rawMethod);
-    if ($compact === '') {
-        return 'Tiền mặt';
-    }
-
-    $cashAliases = ['tienmat', 'cash', 'tm', 'tinmt', 'tienmt', 'tienma'];
-    if (
-        in_array($compact, $cashAliases, true) ||
-        str_contains($compact, 'cash') ||
-        (str_contains($compact, 'tien') && str_contains($compact, 'mat'))
-    ) {
-        return 'Tiền mặt';
-    }
-
-    return null;
-}
-
 function parseCheckoutPayload($input) {
     $items = $input['items'] ?? [];
     if (!is_array($items) || count($items) === 0) {
@@ -147,17 +113,6 @@ switch ($action) {
         foodRespond(true, 'Lấy danh sách món thành công', $data);
         break;
 
-    case 'list_orders':
-        //nhân viên, quản lý mới xem được
-        checkAuth(['Admin', 'Manager', 'Employee']);
-        
-        $orderM = new FoodOrder($conn);
-        $res = $orderM->getAll();
-        $data = [];
-        if ($res) { while($row = $res->fetch_assoc()) { $data[] = $row; } }
-        foodRespond(true, 'Lấy danh sách đơn đồ ăn thành công', $data);
-        break;
-
     case 'save':
         // admin or man mới sửa được
         checkAuth(['Admin', 'Manager']);
@@ -170,7 +125,7 @@ switch ($action) {
         if ($foodModel->save($input)) {
             foodRespond(true, 'Lưu món thành công');
         } else {
-            foodRespond(false, 'Không thể lưu món', null, 400);
+            foodRespond(false, 'Không thể lưu món. Giá phải lớn hơn 0 và tồn kho phải từ 0 trở lên.', null, 400);
         }
         break;
 
@@ -259,11 +214,19 @@ switch ($action) {
                 }
 
                 $foodRow = $foodResult->fetch_assoc();
-                if ((int)$foodRow['soLuongTon'] < $qty) {
+                $stock = (int)$foodRow['soLuongTon'];
+                if ($stock <= 0) {
+                    throw new Exception('Món đã hết hàng: ' . $foodRow['tenFood']);
+                }
+                if ($stock < $qty) {
                     throw new Exception('Số lượng tồn không đủ cho món: ' . $foodRow['tenFood']);
                 }
 
                 $gia = (float)$foodRow['gia'];
+                if ($gia <= 0) {
+                    throw new Exception('Món có giá không hợp lệ: ' . $foodRow['tenFood']);
+                }
+
                 $thanhTien = $gia * (int)$qty;
                 $foodTotal += $thanhTien;
 
@@ -273,12 +236,19 @@ switch ($action) {
                     'gia' => $gia,
                     'soLuong' => (int)$qty,
                     'thanhTien' => $thanhTien,
-                    'soLuongTon' => (int)$foodRow['soLuongTon'],
+                    'soLuongTon' => $stock,
                     'trangThai' => $foodRow['trangThai']
                 ];
             }
 
+            if ($foodTotal <= 0) {
+                throw new Exception('Tổng tiền đồ ăn không hợp lệ.');
+            }
+
             $paymentTotal = $foodTotal + $ticketTotal;
+            if ($paymentTotal <= 0) {
+                throw new Exception('Tổng thanh toán không hợp lệ.');
+            }
 
             foodRespond(true, 'Lấy thông tin thanh toán thành công.', [
                 'items' => $previewItems,
@@ -366,17 +336,29 @@ switch ($action) {
                 }
 
                 $foodRow = $foodResult->fetch_assoc();
-                if ((int)$foodRow['soLuongTon'] < $qty) {
+                $stock = (int)$foodRow['soLuongTon'];
+                if ($stock <= 0) {
+                    throw new Exception('Món đã hết hàng: ' . $foodRow['tenFood']);
+                }
+                if ($stock < $qty) {
                     throw new Exception('Số lượng tồn không đủ cho món: ' . $foodRow['tenFood']);
                 }
 
                 $price = (float)$foodRow['gia'];
+                if ($price <= 0) {
+                    throw new Exception('Món có giá không hợp lệ: ' . $foodRow['tenFood']);
+                }
+
                 $foodTotal += $price * $qty;
                 $detailRows[] = [
                     'foodId' => (int)$foodId,
                     'soLuong' => (int)$qty,
                     'gia' => $price
                 ];
+            }
+
+            if ($foodTotal <= 0) {
+                throw new Exception('Tổng tiền đồ ăn không hợp lệ.');
             }
             
             $orderId = $orderM->create($accId, $bookingId, $foodTotal);
@@ -401,6 +383,10 @@ switch ($action) {
             }
 
             $paymentTotal = $foodTotal + $ticketTotal;
+            if ($paymentTotal <= 0) {
+                throw new Exception('Tổng thanh toán không hợp lệ.');
+            }
+
             $paymentId = $paymentM->create($bookingId, $orderId, $paymentTotal, $phuongThuc);
             if (!$paymentId) {
                 throw new Exception('Không thể tạo thanh toán cho đơn đồ ăn.');

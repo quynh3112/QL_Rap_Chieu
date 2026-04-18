@@ -10,8 +10,17 @@ class Payment {
         $bookingId = $bookingId !== null ? (int)$bookingId : null;
         $foodOrderId = $foodOrderId !== null ? (int)$foodOrderId : null;
         $tongTien = (float)$tongTien;
+        $phuongThuc = trim((string)$phuongThuc);
 
         if ($bookingId === null && $foodOrderId === null) {
+            return false;
+        }
+
+        if ($tongTien <= 0) {
+            return false;
+        }
+
+        if (!in_array($phuongThuc, ['Tiền mặt', 'Thẻ'], true)) {
             return false;
         }
 
@@ -131,7 +140,7 @@ class Payment {
 
     public function getByIdForUpdate($paymentId) {
         $paymentId = (int)$paymentId;
-        $sql = "SELECT paymentId, bookingId, foodOrderId, trangThai
+        $sql = "SELECT paymentId, bookingId, foodOrderId, tongTien, trangThai
                 FROM Payment
                 WHERE paymentId = ?
                 LIMIT 1

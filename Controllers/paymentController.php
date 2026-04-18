@@ -32,20 +32,6 @@ switch ($action) {
         ]);
         break;
 
-    case 'list_all':
-        checkAuth(['Admin', 'Manager', 'Employee']);
-
-        $status = $_GET['status'] ?? null;
-        if ($status === '') {
-            $status = null;
-        }
-
-        paymentRespond(true, 'Lấy danh sách thanh toán thành công', [
-            'payments' => $paymentM->getByStatus($status),
-            'currentRole' => $_SESSION['user']['role'] ?? ''
-        ]);
-        break;
-
     case 'approve':
         checkAuth(['Admin', 'Manager']);
         handlePaymentDecision($conn, $paymentM, $foodOrderM, $input, true);
@@ -86,6 +72,10 @@ function handlePaymentDecision($conn, $paymentM, $foodOrderM, $input, $isApprove
 
         if ($payment['trangThai'] !== 'Chờ xác nhận') {
             throw new Exception('Thanh toán đã được xử lý trước đó');
+        }
+
+        if ((float)$payment['tongTien'] <= 0) {
+            throw new Exception('Thanh toán có tổng tiền không hợp lệ.');
         }
 
         $paymentStatus = $isApprove ? 'Đã duyệt' : 'Đã hủy';

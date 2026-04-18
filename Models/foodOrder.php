@@ -33,13 +33,6 @@ class FoodOrder {
         return false;
     }
 
-    public function getAll() {
-        return $this->conn->query("SELECT o.*, a.hoTen 
-                                   FROM FoodOrder o 
-                                   JOIN Account a ON o.accountId = a.accountId 
-                                   ORDER BY o.ngayMua DESC");   
-    }
-
     public function updateStatus($id, $status) {
         $id = (int)$id;
         $sql = "UPDATE FoodOrder SET trangThai = ? WHERE foodOrderId = ?";

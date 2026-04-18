@@ -8,23 +8,48 @@ class Food {
     }
 
     public function save($data) {
-        $ten = $this->conn->real_escape_string($data['tenFood']);
-        $loai = $this->conn->real_escape_string($data['loaiFood']);
-        $gia = (float)$data['gia'];
-        $ton = (int)$data['soLuongTon'];
-        $tt = $data['trangThai'] ?? 'Còn';
+        $ten = trim((string)($data['tenFood'] ?? ''));
+        $loai = trim((string)($data['loaiFood'] ?? ''));
+        $gia = isset($data['gia']) ? (float)$data['gia'] : -1;
+        $ton = isset($data['soLuongTon']) ? (int)$data['soLuongTon'] : -1;
+
+        if ($ten === '' || $loai === '' || $gia <= 0 || $ton < 0) {
+            return false;
+        }
+
+        $tt = $ton > 0 ? 'Còn' : 'Hết';
 
         if (isset($data['foodId']) && !empty($data['foodId'])) {
             $id = (int)$data['foodId'];
-            $sql = "UPDATE food SET tenFood='$ten', loaiFood='$loai', gia=$gia, soLuongTon=$ton, trangThai='$tt' WHERE foodId=$id";
-        } else {
-            $sql = "INSERT INTO food (tenFood, loaiFood, gia, soLuongTon, trangThai) VALUES ('$ten', '$loai', $gia, $ton, '$tt')";
+            if ($id <= 0) {
+                return false;
+            }
+
+            $sql = "UPDATE food
+                    SET tenFood = ?, loaiFood = ?, gia = ?, soLuongTon = ?, trangThai = ?
+                    WHERE foodId = ?";
+            $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+                return false;
+            }
+
+            $stmt->bind_param("ssdisi", $ten, $loai, $gia, $ton, $tt, $id);
+            return $stmt->execute();
         }
-        return $this->conn->query($sql);
+
+        $sql = "INSERT INTO food (tenFood, loaiFood, gia, soLuongTon, trangThai)
+                VALUES (?, ?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param("ssdis", $ten, $loai, $gia, $ton, $tt);
+        return $stmt->execute();
     }
     public function delete($id) {
-    $id = (int)$id;
-    return $this->conn->query("DELETE FROM food WHERE foodId = $id");
-}
+        $id = (int)$id;
+        return $this->conn->query("DELETE FROM food WHERE foodId = $id");
+    }
 }
 ?>

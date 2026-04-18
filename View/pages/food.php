@@ -62,7 +62,6 @@ if (!file_exists($headerPath)) {
                     <label for="payment-method">Phương thức thanh toán</label>
                     <select id="payment-method">
                         <option value="Tiền mặt">Tiền mặt</option>
-                        <option value="Thẻ">Thẻ</option>
                     </select>
                 </div>
 
