@@ -93,11 +93,27 @@ function getCheckoutDraftFromCurrentCart() {
         return { draft: null, error: 'Vui lòng chọn phương thức thanh toán.' };
     }
 
+    const invalidItem = cart.find(item => {
+        const foodId = Number(item.foodId);
+        const soLuong = Number(item.soLuong);
+        const price = Number(item.price);
+
+        return (
+            !Number.isInteger(foodId) || foodId <= 0 ||
+            !Number.isInteger(soLuong) || soLuong <= 0 ||
+            !Number.isFinite(price) || price <= 0
+        );
+    });
+
+    if (invalidItem) {
+        return { draft: null, error: 'Giỏ hàng có món không hợp lệ. Vui lòng chọn lại.' };
+    }
+
     const items = cart.map(item => ({
-        foodId: item.foodId,
+        foodId: Number(item.foodId),
         tenFood: item.tenFood,
-        price: item.price,
-        soLuong: item.soLuong
+        price: Number(item.price),
+        soLuong: Number(item.soLuong)
     }));
 
     return {
@@ -147,17 +163,33 @@ async function loadFoodUser() {
             return;
         }
 
-        container.innerHTML = json.data.map(f => `
-            <div style="background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #333; text-align: center;">
-                <h3 style="color: #fff; margin: 0 0 10px 0;">${f.tenFood}</h3>
-                <p style="color: #f5c518; font-size: 1.2em; font-weight: bold;">${formatCurrency(f.gia)}</p>
-                <p style="color: #666; font-size: 0.8em;">Còn lại: ${f.soLuongTon}</p>
-                <button onclick="addToCart(${f.foodId}, '${f.tenFood}', ${f.gia}, ${f.soLuongTon})" 
-                        style="background: #e71a0f; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 10px;">
-                    CHỌN MUA
-                </button>
-            </div>
-        `).join('');
+        container.innerHTML = json.data.map(f => {
+            const foodId = Number(f.foodId) || 0;
+            const stock = Number(f.soLuongTon) || 0;
+            const price = Number(f.gia) || 0;
+            const isAvailable = stock > 0 && price > 0;
+            const stockLabel = isAvailable ? `Còn lại: ${stock}` : 'Hết hàng';
+            const stockColor = isAvailable ? '#666' : '#e74c3c';
+            const buttonText = isAvailable ? 'CHỌN MUA' : 'HẾT HÀNG';
+            const buttonBg = isAvailable ? '#e71a0f' : '#555';
+            const buttonCursor = isAvailable ? 'pointer' : 'not-allowed';
+            const buttonOpacity = isAvailable ? '1' : '0.65';
+            const buttonDisabled = isAvailable ? '' : 'disabled';
+            const encodedName = encodeURIComponent(String(f.tenFood || ''));
+
+            return `
+                <div style="background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #333; text-align: center;">
+                    <h3 style="color: #fff; margin: 0 0 10px 0;">${f.tenFood}</h3>
+                    <p style="color: #f5c518; font-size: 1.2em; font-weight: bold;">${formatCurrency(price)}</p>
+                    <p style="color: ${stockColor}; font-size: 0.8em;">${stockLabel}</p>
+                    <button ${buttonDisabled}
+                            onclick="addToCart(${foodId}, decodeURIComponent('${encodedName}'), ${price}, ${stock})"
+                            style="background: ${buttonBg}; color: white; border: none; padding: 10px; width: 100%; cursor: ${buttonCursor}; opacity: ${buttonOpacity}; font-weight: bold; border-radius: 4px; margin-top: 10px;">
+                        ${buttonText}
+                    </button>
+                </div>
+            `;
+        }).join('');
     } catch (e) {
         console.error('Lỗi:', e);
         container.innerHTML = `<p class="food-loading">${e.message || 'Không thể tải danh sách món.'}</p>`;
@@ -165,21 +197,28 @@ async function loadFoodUser() {
 }
 
 function addToCart(id, name, price, stock) {
+    const numericStock = Number(stock) || 0;
+    const numericPrice = Number(price) || 0;
 
-    if (stock <= 0) {
+    if (numericStock <= 0) {
         alert('Món này đã hết hàng.');
+        return;
+    }
+
+    if (numericPrice <= 0) {
+        alert('Món này chưa có giá hợp lệ nên chưa thể mua.');
         return;
     }
 
     const item = cart.find(i => i.foodId === id);
     if (item) {
-        if (item.soLuong < stock) {
+        if (item.soLuong < numericStock) {
             item.soLuong++;
         } else {
             alert('Đã đạt giới hạn tồn kho của món này.');
         }
     } else {
-        cart.push({ foodId: id, tenFood: name, price: Number(price) || 0, soLuong: 1 });
+        cart.push({ foodId: id, tenFood: name, price: numericPrice, soLuong: 1 });
     }
 
     renderCart();
@@ -211,7 +250,6 @@ function renderCart() {
                     <div style="color: #f5c518; font-weight: bold; margin-bottom: 5px;">
                         ${formatCurrency(i.price * i.soLuong)}
                     </div>
->>>>>>> dev-food
                     <button onclick="removeFromCart(${index})" 
                             style="background: none; border: 1px solid #444; color: #e71a0f; font-size: 10px; cursor: pointer; padding: 2px 6px; border-radius: 3px;">
                         XÓA
@@ -264,8 +302,8 @@ function restoreCartFromCheckoutDraftIfNeeded() {
         foodId: Number(item.foodId) || 0,
         tenFood: item.tenFood || `Món #${item.foodId}`,
         price: Number(item.price) || 0,
-        soLuong: Number(item.soLuong) || 1
-    })).filter(item => item.foodId > 0 && item.soLuong > 0);
+        soLuong: Number(item.soLuong) || 0
+    })).filter(item => item.foodId > 0 && item.soLuong > 0 && item.price > 0);
 
     const bookingInput = document.getElementById('booking-id');
     if (bookingInput) {

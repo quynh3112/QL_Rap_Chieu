@@ -88,6 +88,10 @@ function handlePaymentDecision($conn, $paymentM, $foodOrderM, $input, $isApprove
             throw new Exception('Thanh toán đã được xử lý trước đó');
         }
 
+        if ((float)$payment['tongTien'] <= 0) {
+            throw new Exception('Thanh toán có tổng tiền không hợp lệ.');
+        }
+
         $paymentStatus = $isApprove ? 'Đã duyệt' : 'Đã hủy';
         $foodOrderStatus = $isApprove ? 'Đã giao' : 'Đã hủy';
         $bookingStatus = $isApprove ? 'Đã xác nhận' : 'Đã hủy';

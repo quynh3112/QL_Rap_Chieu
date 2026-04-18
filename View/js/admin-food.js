@@ -8,19 +8,24 @@ async function loadAdminData() {
             listFoodGlobal = json.data;
             const tbody = document.getElementById('tbody-food');
             if (tbody) {
-                tbody.innerHTML = json.data.map((f, index) => `
+                tbody.innerHTML = json.data.map((f, index) => {
+                    const stock = Number(f.soLuongTon) || 0;
+                    const status = stock > 0 ? 'Còn' : 'Hết';
+
+                    return `
                     <tr>
                         <td>${f.tenFood}</td>
                         <td>${f.loaiFood}</td>
                         <td>${new Intl.NumberFormat().format(f.gia)}đ</td>
-                        <td>${f.soLuongTon}</td>
-                        <td style="color:${f.soLuongTon > 0 ? '#2ecc71' : '#e74c3c'}">${f.trangThai}</td>
+                        <td>${stock}</td>
+                        <td style="color:${stock > 0 ? '#2ecc71' : '#e74c3c'}">${status}</td>
                         <td>
                             <button onclick="editFood(${index})" style="color:cyan; background:none; border:1px solid cyan; cursor:pointer; padding:2px 5px;">Sửa</button>
                             <button onclick="deleteFood(${f.foodId})" style="color:red; background:none; border:1px solid red; cursor:pointer; padding:2px 5px; margin-left:5px;">Xoá</button>
                         </td>
                     </tr>
-                `).join('');
+                `;
+                }).join('');
             }
         }
     } catch (e) { console.error("Lỗi load món:", e); }
@@ -169,7 +174,6 @@ function editFood(index) {
 }
 
 async function saveFood() {
-    // 1. Phải khai báo biến 'data' trước khi dùng
     const data = {
         foodId: document.getElementById('input-foodId').value,
         tenFood: document.getElementById('input-tenFood').value,
@@ -178,13 +182,27 @@ async function saveFood() {
         soLuongTon: document.getElementById('input-soLuongTon').value
     };
 
-    // Kiểm tra nhanh xem đã nhập tên và giá chưa
-    if (!data.tenFood || !data.gia) {
-        return alert("Mày chưa nhập đủ tên món và giá kìa!");
+    const tenFood = (data.tenFood || '').trim();
+    const gia = Number(data.gia);
+    const soLuongTon = Number(data.soLuongTon);
+
+    if (!tenFood) {
+        return alert("Vui lòng nhập tên món.");
     }
 
+    if (!Number.isFinite(gia) || gia <= 0) {
+        return alert("Giá món phải lớn hơn 0.");
+    }
+
+    if (!Number.isInteger(soLuongTon) || soLuongTon < 0) {
+        return alert("Số lượng tồn phải là số nguyên từ 0 trở lên.");
+    }
+
+    data.tenFood = tenFood;
+    data.gia = gia;
+    data.soLuongTon = soLuongTon;
+
     try {
-        // 2. Bây giờ mới dùng biến 'data' ở đây
         const res = await fetch('../../Controllers/foodController.php?action=save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -210,7 +228,7 @@ function openModal() {
     document.getElementById('input-foodId').value = '';
     document.getElementById('input-tenFood').value = '';
     document.getElementById('input-gia').value = '';
-    document.getElementById('input-soLuongTon').value = '';
+    document.getElementById('input-soLuongTon').value = '0';
     document.getElementById('food-modal').style.display = 'flex';
 }
 function closeModal() { document.getElementById('food-modal').style.display = 'none'; }
