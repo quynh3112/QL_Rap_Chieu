@@ -10,6 +10,7 @@
             <p><i class="fa-solid fa-x"></i></p>
            
             <a href="admin_food.php">Quản lý đồ ăn</a>
+            <a href="nhanvien.php" style="<?= $_SESSION['user']['role'] === 'Employee' ? '' : 'display:none' ?>">Đặt vé hộ khách</a>
             
             <a href="schedule.php" style="<?= $_SESSION['user']['role'] === 'Admin' ? '' : 'display:none' ?>">Quản lý lịch chiếu</a>
             <a href="movies.php" style="<?= $_SESSION['user']['role'] === 'Admin' ? '' : 'display:none' ?>">Quản lý phim</a>

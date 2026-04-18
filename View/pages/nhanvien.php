@@ -1,3 +1,14 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$employeeUser = $_SESSION['user'] ?? null;
+if (!$employeeUser || ($employeeUser['role'] ?? '') !== 'Employee') {
+    header('Location: login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -112,6 +123,11 @@
     </table>
 </div>
 
+<script>
+const nvSessionUser = <?php echo json_encode($employeeUser, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
+sessionStorage.setItem('user', JSON.stringify(nvSessionUser));
+localStorage.setItem('user', JSON.stringify(nvSessionUser));
+</script>
 <script src="../js/nhanvien.js"></script>
 </body>
 </html>

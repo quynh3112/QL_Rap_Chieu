@@ -95,9 +95,9 @@ switch ($method) {
         }
 
         // Tạo booking
-        // $tenKhach      = $input['tenKhach'] ?? '';
+        $tenKhach      = $input['tenKhach'] ?? '';
         $trangThaiInit = in_array($input['trangThai'] ?? '', ['Đã xác nhận']) ? 'Đã xác nhận' : 'Chờ thanh toán';
-        $bookingId = $booking->createWithStatus($accountId, $scheduleId, count($seatIds),  $trangThaiInit);
+        $bookingId = $booking->createWithStatus($accountId, $scheduleId, count($seatIds), $tenKhach, $trangThaiInit);
         if (!$bookingId) {
             echo json_encode(["status" => false, "message" => "Tạo booking thất bại"]);
             break;

@@ -30,6 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Lấy thông tin user từ kết quả API trả về
                 const user = result.user;
 
+                // Đồng bộ thông tin user cho các trang đang dùng storage phía client.
+                try {
+                    const userJson = JSON.stringify(user);
+                    sessionStorage.setItem('user', userJson);
+                    localStorage.setItem('user', userJson);
+                } catch (storageErr) {
+                    console.warn('Không thể lưu thông tin user vào storage:', storageErr);
+                }
+
                 // THỰC HIỆN PHÂN QUYỀN CHUYỂN TRANG
                 setTimeout(() => {
                     if (user.role === "Customer") {

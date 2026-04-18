@@ -1,5 +1,32 @@
-const BASE = 'http://localhost/QL_Merged/Controllers';
-const nvUser = JSON.parse(sessionStorage.getItem('user') || 'null');
+const BASE = 'http://localhost/QL_Rap_Chieu/Controllers';
+
+function getStoredUser() {
+    const parseUser = (raw) => {
+        if (!raw) {
+            return null;
+        }
+        try {
+            const parsed = JSON.parse(raw);
+            return parsed && typeof parsed === 'object' ? parsed : null;
+        } catch (e) {
+            return null;
+        }
+    };
+
+    const sessionUser = parseUser(sessionStorage.getItem('user'));
+    if (sessionUser) {
+        return sessionUser;
+    }
+
+    const localUser = parseUser(localStorage.getItem('user'));
+    if (localUser) {
+        sessionStorage.setItem('user', JSON.stringify(localUser));
+    }
+
+    return localUser;
+}
+
+const nvUser = getStoredUser();
 
 // QR - sửa thông tin ngân hàng của bạn
 const STK      = '1234567890';
@@ -23,7 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function nvLogout() {
     sessionStorage.removeItem('user');
-    window.location.href = 'login.php';
+    localStorage.removeItem('user');
+    window.location.href = 'logout.php';
 }
 
 function showTab(name) {
@@ -158,8 +186,10 @@ function updateSeatSummary() {
 
 // BƯỚC 4
 async function loadFood() {
-    const res  = await fetch(`${BASE}/foodController.php`);
-    const data = await res.json();
+    const res  = await fetch(`${BASE}/foodController.php?action=list_all`);
+    const payload = await res.json();
+    const data = payload && payload.success ? payload.data : [];
+
     document.getElementById('tbody-food').innerHTML = data.map(f => `
         <tr>
             <td>${f.tenFood}</td>
@@ -178,6 +208,13 @@ async function loadFood() {
 function changeFood(foodId, delta, btn) {
     const food = JSON.parse(btn.dataset.food);
     if (!state.foods[foodId]) state.foods[foodId] = { data: food, qty: 0 };
+
+    const maxStock = Number(food.soLuongTon) || 0;
+    if (delta > 0 && state.foods[foodId].qty >= maxStock) {
+        alert('Số lượng chọn đã đạt giới hạn tồn kho.');
+        return;
+    }
+
     state.foods[foodId].qty = Math.max(0, state.foods[foodId].qty + delta);
     document.getElementById('qty-' + foodId).textContent = state.foods[foodId].qty;
     updateFoodTotal();
@@ -245,17 +282,29 @@ async function xacNhanDatVe() {
         }
         const bookingId = bResult.bookingId;
         const foodItems = Object.values(state.foods).filter(f => f.qty > 0);
+        let foodWarn = '';
+
         if (foodItems.length > 0) {
-            await fetch(`${BASE}/foodOrderController.php`, {
+            const foodRes = await fetch(`${BASE}/foodController.php?action=place_order`, {
                 method : 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body   : JSON.stringify({
-                    accountId: nvUser.accountId,
-                    items: foodItems.map(f => ({ foodId: f.data.foodId, soLuong: f.qty, gia: f.data.gia }))
+                    items: foodItems.map(f => ({
+                        foodId: f.data.foodId,
+                        soLuong: f.qty
+                    }))
                 })
             });
+
+            const foodResult = await foodRes.json();
+            if (!foodRes.ok || !foodResult || foodResult.success !== true) {
+                foodWarn = foodResult && foodResult.message
+                    ? `\nTuy nhiên đặt đồ ăn thất bại: ${foodResult.message}`
+                    : '\nTuy nhiên đặt đồ ăn thất bại.';
+            }
         }
-        alert(`Đặt vé thành công! Mã booking: #${bookingId}`);
+
+        alert(`Đặt vé thành công! Mã booking: #${bookingId}${foodWarn}`);
         state.tenKhach = ''; state.seats = []; state.foods = {};
         document.getElementById('ten-khach').value = '';
         showTab('khach');

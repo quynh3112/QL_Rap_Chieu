@@ -143,18 +143,29 @@ class Booking {
         return $trung;
     }
 
-    // Tạo booking với tenKhach và trangThai tùy chỉnh (dùng cho nhân viên)
-  public function createWithStatus($accountId, $scheduleId, $soLuong, $trangThai = 'Chờ thanh toán') {
-    global $conn;
+    // Tạo booking với trangThai tùy chỉnh (tenKhach được nhận để tương thích luồng nhân viên).
+    public function createWithStatus($accountId, $scheduleId, $soLuong, $tenKhach = '', $trangThai = 'Chờ thanh toán') {
+        global $conn;
 
-    $sql  = "INSERT INTO Booking (accountId, scheduleId, soLuong, trangThai) VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
+        // Tương thích với chữ ký cũ createWithStatus(..., $trangThai)
+        if (in_array($tenKhach, ['Chờ thanh toán', 'Đã xác nhận', 'Đã hủy'], true)
+            && $trangThai === 'Chờ thanh toán') {
+            $trangThai = $tenKhach;
+            $tenKhach = '';
+        }
 
-    $stmt->bind_param("iiis", $accountId, $scheduleId, $soLuong, $trangThai);
+        $sql  = "INSERT INTO Booking (accountId, scheduleId, soLuong, trangThai) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
 
-    if ($stmt->execute()) {
-        return $conn->insert_id;
+        $stmt->bind_param("iiis", $accountId, $scheduleId, $soLuong, $trangThai);
+
+        if ($stmt->execute()) {
+            return $conn->insert_id;
+        }
+
+        return false;
     }
-    return false;
-}
 }
