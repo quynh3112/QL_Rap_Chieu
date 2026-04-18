@@ -44,5 +44,26 @@ public function createSeat($tongghe, $phongId){
         global $conn;
         return $conn->query("DELETE From  seat where roomId='$phongId'");
     }
+    public function tiLelapDay(){
+        global $conn;
+        $sql="SELECT 
+    m.tenPhim,
+    ROUND(
+        COUNT(DISTINCT bs.seatId) * 100.0 
+        / COUNT(DISTINCT st.seatId)
+    , 2) AS tiLeLapDay
+FROM movie m
+JOIN schedule s ON s.movieId = m.movieId
+JOIN room r ON r.roomId = s.roomId
+JOIN seat st ON st.roomId = r.roomId
+LEFT JOIN booking b 
+    ON b.scheduleId = s.scheduleId 
+    AND b.trangThai = 'Đã xác nhận'
+LEFT JOIN bookingseat bs ON bs.bookingId = b.bookingId
+GROUP BY m.tenPhim
+ORDER BY tiLeLapDay DESC;";
+        return $conn->query($sql);
+
+    }
 }
 ?>

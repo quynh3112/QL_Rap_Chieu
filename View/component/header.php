@@ -7,7 +7,7 @@
 
 <header>
     <div class="img">
-        <a href="hehe.php"><img src="../asset/cgv.png" alt=""></a>
+        <a href="home.php"><img src="../asset/cgv.png" alt=""></a>
     </div>
 
     <div>

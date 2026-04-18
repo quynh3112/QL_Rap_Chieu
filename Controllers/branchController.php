@@ -13,8 +13,18 @@ switch ($method) {
         $id = $_GET['id'] ?? null;
         $city=$_GET['thanhPho']??null;
         $vip=$_GET['vip']??null;
+        
 
         $branchId=$_GET['branchId']?? null;
+        if(isset($_GET['doanhthu_all'])){
+            $result=$branch->doanhThuTheoChiNhanh();
+            $data=[];
+            while($row=$result->fetch_assoc()){
+                $data[]=$row;
+            }
+            echo json_encode($data);
+            exit;
+        }
 
         if($id){
 

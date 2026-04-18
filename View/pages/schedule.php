@@ -61,8 +61,9 @@ $currentRole = $_SESSION['user']['role'] ?? '';
 <style>
 body {
     font-family: Arial;
-    background: linear-gradient(120deg, #1f1c2c, #928dab);
-    color: #333;
+    background: black;
+    color: white;
+    margin-top: 0;
 }
 .toast {
     position: fixed;
@@ -133,18 +134,19 @@ button {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    background: #6a5acd;
+    background: red;
     color: white;
 }
 
 button:hover {
-    background: #483d8b;
+    background: red;
+    transform: scale(1.05);
 }
 
 /* TABLE */
 .table-box {
     margin: 20px;
-    background: white;
+    background: #111827;
     padding: 15px;
     border-radius: 10px;
 }
@@ -155,7 +157,7 @@ table {
 }
 
 th {
-    background: #6a5acd;
+    background: red;
     color: white;
 }
 

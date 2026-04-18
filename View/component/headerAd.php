@@ -8,14 +8,18 @@
         <h2><i class="fa-solid fa-bars"></i></h2>
         <div class="items">
             <p><i class="fa-solid fa-x"></i></p>
-            <a href="movies.php">Quản lý phim</a>
+           
             <a href="admin_food.php">Quản lý đồ ăn</a>
-            <a href="schedule.php">Quản lý xuất chiếu </a>
-            <a href="">Quản Lý hóa đơn</a>
-            <a href="branch.php">Quản lý chi nhánh</a>
-            <a href="room.php">Quản lý phòng </a>
-            <a href="addWorkSchedule.php">Quản lí ca làm việc</a>
-            <a href="">Doanh thu theo từng rạp</a>
+            
+            <a href="schedule.php" style="<?= $_SESSION['user']['role'] === 'Admin' ? '' : 'display:none' ?>">Quản lý lịch chiếu</a>
+            <a href="movies.php" style="<?= $_SESSION['user']['role'] === 'Admin' ? '' : 'display:none' ?>">Quản lý phim</a>
+            <a href="admin.php" style="<?= $_SESSION['user']['role'] === 'Admin' ? '' : 'display:none' ?>">Quản lý booking</a>
+
+            <a href="branch.php" style="<?= $_SESSION['user']['role'] === 'Admin' ? '' : 'display:none' ?>">Quản lý chi nhánh</a>
+            <a href="room.php" style="<?= $_SESSION['user']['role'] === 'Admin' ? '' : 'display:none' ?>">Quản lý phòng </a>
+            <a href="addWorkSchedule.php" style="<?= $_SESSION['user']['role'] === 'Admin' ? '' : 'display:none' ?>">Quản lí ca làm việc</a>
+            <a href="admin_employees.php" style="<?= $_SESSION['user']['role'] === 'Admin' ? '' : 'display:none' ?>">Quản lý nhân viên</a>
+            <a href="tileGhe.php" style="<?= $_SESSION['user']['role'] === 'Admin' ? '' : 'display:none' ?>">Tỉ lệ lấp đầy ghế theo phim</a>
         </div>
 
     </div>
@@ -25,7 +29,7 @@
     <div class="account">
         <?php if(
             isset($_SESSION['user']) &&
-            in_array($_SESSION['user']['role'], ['Admin', 'Manager'])
+            in_array($_SESSION['user']['role'], ['Admin', 'Manager','Employee']) 
         ): ?>
             <div class='container'>
                 <button><?php echo htmlspecialchars($_SESSION['user']['hoTen']); ?></button>

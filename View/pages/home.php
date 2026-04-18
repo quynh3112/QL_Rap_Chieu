@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="../css/header.css">
     <meta charset="UTF-8"/>
     <style>
-        body { margin-top: 70px; font-family: Arial, sans-serif; }
+        body {  font-family: Arial, sans-serif; }
         .hero {
             text-align: center;
             padding: 60px 20px;

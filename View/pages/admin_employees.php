@@ -18,14 +18,14 @@ $isAdmin = ($isLoggedIn && $_SESSION['user']['role'] === 'Admin');
         .search-box { background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #dee2e6; }
     </style>
 </head>
-<body class="bg-light">
+<body class="bg-black text-white">
 
     <div class="container py-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-dark fw-bold"><i class="bi bi-person-badge-fill"></i> QUẢN LÝ TÀI KHOẢN</h2>
+            <h2 class="text-red fw-bold"><i class="bi bi-person-badge-fill"></i> QUẢN LÝ TÀI KHOẢN</h2>
             
             <?php if ($isAdmin): ?>
-            <button class="btn btn-success shadow-sm" onclick="openAddModal()">
+            <button class="btn bg-red btn-success shadow-sm" onclick="openAddModal()">
                 <i class="bi bi-plus-lg"></i> Thêm nhân viên mới
             </button>
             <?php endif; ?>

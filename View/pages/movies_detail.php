@@ -1,8 +1,12 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
 <?php include "../component/header.php"; ?>
 
 <div id="movieDetail" class="detail-container"></div>
 <h3 style="text-align:center; margin-top:20px;">📅 Lịch chiếu</h3>
 <div id="scheduleList" style="padding:20px;"></div>
+<?php include "movie_comments.php"; ?>
 <style>
 body {
     background: linear-gradient(135deg, #1f1c2c, #928dab);
@@ -85,6 +89,26 @@ body {
 .back-btn:hover {
     transform: scale(1.05);
 }
+header .container {
+    max-width: none !important;
+    width: auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Ép thẻ H2 của header không được nhận khoảng lề (margin) của Bootstrap */
+header h2 {
+    margin-bottom: 0 !important;
+    white-space: nowrap !important; /* Chống rớt chữ Rạp CGV */
+    line-height: normal !important;
+}
+
+/* Đảm bảo icon không bị Bootstrap làm lệch */
+header i {
+    line-height: inherit !important;
+}
 
 </style>
 
@@ -112,7 +136,7 @@ function loadDetail(){
             }
 
             let html = `
-            <img src="/QL_Rap_Chieu/uploads/${m.img}" 
+            <img src="../../uploads/${m.img}" 
                  onerror="this.src='https://via.placeholder.com/300x400'">
 
             <div class="detail-info">
@@ -185,3 +209,4 @@ function loadSchedules(){
 loadDetail();
 loadSchedules();
 </script>
+

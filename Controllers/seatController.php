@@ -6,6 +6,17 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch($method){
 
     case "GET":
+        if (isset($_GET['tile_phim'])) {
+    $result = $seat->tiLelapDay();
+
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+
+    echo json_encode($data);
+    exit;
+}
        if(isset($_GET['roomId'])){
             $result = $seat->findAll($_GET['roomId']);
             

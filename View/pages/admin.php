@@ -14,11 +14,11 @@ session_start();
     <strong>ADMIN</strong> &nbsp;|&nbsp;
     <span id="admin-name"></span> &nbsp;|&nbsp;
     <button onclick="showTab('booking')">Đặt vé</button>
-    <button onclick="showTab('account')">Tài khoản</button>
-    <button onclick="showTab('food')">Đồ ăn</button>
-    <button onclick="showTab('schedule')">Lịch chiếu</button>
+    <!-- <button onclick="showTab('account')">Tài khoản</button> -->
+    <!-- <button onclick="showTab('food')">Đồ ăn</button> -->
+    <!-- <button onclick="showTab('schedule')">Lịch chiếu</button> -->
     <button onclick="showTab('doanhthu')">Doanh thu</button>
-    <button onclick="showTab('phong')">Thống kê phòng</button>
+    <!-- <button onclick="showTab('phong')">Thống kê phòng</button> -->
     <button onclick="adminLogout()">Đăng xuất</button>
 </div>
 <hr/>
@@ -50,7 +50,7 @@ session_start();
 </div>
 
 <!-- TAB TÀI KHOẢN -->
-<div id="tab-account" class="tab" style="display:none">
+<!-- <div id="tab-account" class="tab" style="display:none">
     <h2>Quản lý tài khoản</h2>
     <div>
         <select id="acc-filter-role">
@@ -72,10 +72,10 @@ session_start();
         </thead>
         <tbody id="tbody-account"></tbody>
     </table>
-</div>
+</div> -->
 
 <!-- TAB ĐỒ ĂN -->
-<div id="tab-food" class="tab" style="display:none">
+<!-- <div id="tab-food" class="tab" style="display:none">
     <h2>Quản lý đồ ăn / nước uống</h2>
     <div>
         <button onclick="openFoodDialog(null)">Thêm món</button>
@@ -91,10 +91,10 @@ session_start();
         </thead>
         <tbody id="tbody-food"></tbody>
     </table>
-</div>
+</div> -->
 
 <!-- TAB LỊCH CHIẾU -->
-<div id="tab-schedule" class="tab" style="display:none">
+<!-- <div id="tab-schedule" class="tab" style="display:none">
     <h2>Quản lý lịch chiếu</h2>
     <div>
         <button onclick="openScheduleDialog(null)">Thêm lịch chiếu</button>
@@ -110,7 +110,7 @@ session_start();
         </thead>
         <tbody id="tbody-schedule"></tbody>
     </table>
-</div>
+</div> -->
 
 <!-- TAB DOANH THU -->
 <div id="tab-doanhthu" class="tab" style="display:none">
@@ -183,7 +183,7 @@ session_start();
 </dialog>
 
 <!-- DIALOG ĐỒ ĂN -->
-<dialog id="dlg-food">
+<!-- <dialog id="dlg-food">
     <form id="form-food">
         <h3 id="dlg-food-title">Thêm món ăn</h3>
         <input type="hidden" id="food-id"/>
@@ -208,7 +208,7 @@ session_start();
             <button type="submit">Lưu</button>
         </div>
     </form>
-</dialog>
+</dialog> -->
 
 <!-- DIALOG LỊCH CHIẾU -->
 <dialog id="dlg-schedule">

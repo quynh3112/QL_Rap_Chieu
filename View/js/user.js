@@ -72,12 +72,42 @@ async function loadSchedulesForMovie(movieId) {
     const res  = await fetch(`${BASE}/schedules.php?movieId=${movieId}`);
     const data = await res.json();
 
-    if (!data || data.length === 0) {
-        document.getElementById('schedule-list').innerHTML = '<p>Chưa có suất chiếu.</p>';
+    // 👉 LẤY THÔNG TIN PHIM từ state
+    const m = state.movie;
+
+    let html = `
+        <div style="
+            display:flex;
+            gap:20px;
+            background: rgba(255,255,255,0.1);
+            padding:15px;
+            border-radius:12px;
+            margin-bottom:20px;
+        ">
+            <img src="${m.img || ''}" 
+                 onerror="this.style.display='none'"
+                 style="width:150px;height:200px;object-fit:cover;border-radius:10px">
+
+            <div>
+                <h2>${m.tenPhim}</h2>
+                <p><b>⏱ Thời lượng:</b> ${m.thoiLuong || 'N/A'} phút</p>
+                <p><b>🎬 Đạo diễn:</b> ${m.daoDien || 'N/A'}</p>
+                <p><b>🎭 Diễn viên:</b> ${m.dienVien || 'N/A'}</p>
+                <p><b>📅 Năm:</b> ${m.namSanXuat || 'N/A'}</p>
+                <p><b>📌 Trạng thái:</b> ${m.trangThai}</p>
+            </div>
+        </div>
+
+        <h3>Chọn rạp và suất chiếu</h3>
+    `;
+
+    if (!Array.isArray(data) || data.length === 0) {
+        html += '<p>Chưa có suất chiếu.</p>';
+        document.getElementById('schedule-list').innerHTML = html;
         return;
     }
 
-    // Group theo tên phòng
+    // 👉 group theo phòng
     const grouped = {};
     data.forEach(s => {
         const key = s.tenPhong || 'Chưa rõ phòng';
@@ -85,7 +115,7 @@ async function loadSchedulesForMovie(movieId) {
         grouped[key].push(s);
     });
 
-    document.getElementById('schedule-list').innerHTML = Object.keys(grouped).map(phong => `
+    html += Object.keys(grouped).map(phong => `
         <div>
             <h4>${phong}</h4>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -98,6 +128,8 @@ async function loadSchedulesForMovie(movieId) {
             </div>
         </div>
     `).join('');
+
+    document.getElementById('schedule-list').innerHTML = html;
 }
 
 async function selectSchedule(sch) {
@@ -196,9 +228,13 @@ async function loadFood() {
 }
 
 function changeFood(foodId, delta, btn) {
-    const food = JSON.parse(btn.dataset.food);
+    const raw = btn.dataset.food;
+
+    const food = JSON.parse(decodeURIComponent(raw)); // 👈 FIX
+
     if (!state.foods[foodId]) state.foods[foodId] = { data: food, qty: 0 };
     state.foods[foodId].qty = Math.max(0, state.foods[foodId].qty + delta);
+
     document.getElementById('qty-' + foodId).textContent = state.foods[foodId].qty;
     updateFoodTotal();
 }
