@@ -12,6 +12,15 @@
         case "POST" :
             // Xử lý Đăng nhập hoặc Đăng ký dựa trên một tham số 'action'
             if($data['action'] == 'login') {
+                // Kiểm tra dữ liệu rỗng
+                if (empty($data['email']) || empty($data['password'])) {
+                    echo json_encode([
+                        "status" => false,
+                        "message" => "Vui lòng nhập đầy đủ thông tin đăng nhập."
+                    ]);
+                    exit;
+                }
+
                 $user = $account->login($data['email'], $data['password']);
                 if($user) {
                     unset($user['password']);
