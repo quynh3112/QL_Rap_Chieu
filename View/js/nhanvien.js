@@ -228,6 +228,7 @@ function updateFoodTotal() {
 
 // BƯỚC 5
 function buildConfirm() {
+    
     const tongVe   = state.seats.reduce((s, g) => s + (+g.giaGhe) + (+state.schedule.giaVe), 0);
     const tongFood = Object.values(state.foods).reduce((s, f) => s + f.data.gia * f.qty, 0);
     const tongAll  = tongVe + tongFood;

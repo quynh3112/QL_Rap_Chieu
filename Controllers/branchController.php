@@ -112,12 +112,15 @@ switch ($method) {
         $thanhPho = $data['thanhPho'] ?? null;
 
         if (!$tenBranch || !$diaChi || !$thanhPho) {
+            http_response_code(400);
             echo json_encode(["status" => false, "message" => "Không được bỏ trống dữ liệu!"]);
             exit;
         }
 
         $check = $branch->check($tenBranch);
+
         if ($check->num_rows > 0) {
+            http_response_code(409);
             echo json_encode(["status" => false, "message" => "Tên chi nhánh đã tồn tại!"]);
             exit;
         }
@@ -125,6 +128,7 @@ switch ($method) {
         $result = $branch->create($tenBranch, $diaChi, $thanhPho);
 
         echo json_encode([
+
             "status" => $result ? true : false,
             "message" => $result ? "Thêm chi nhánh thành công!" : "Thêm thất bại!",
             "data" => $result
@@ -140,12 +144,14 @@ switch ($method) {
         $thanhPho = $data['thanhPho'] ?? null;
 
         if (!$id || !$tenBranch || !$diaChi || !$thanhPho) {
+            http_response_code(400);
             echo json_encode(["status" => false, "message" => "Thiếu dữ liệu cập nhật!"]);
             exit;
         }
 
         $found = $branch->find($id);
         if ($found->num_rows <= 0) {
+            http_response_code(404);
             echo json_encode(["status" => false, "message" => "ID không tồn tại"]);
             exit;
         }
@@ -153,8 +159,10 @@ switch ($method) {
         $current = $found->fetch_assoc();
 
         if ($tenBranch != $current['tenBranch']) {
+
             $check = $branch->check($tenBranch);
             if ($check->num_rows > 0) {
+                http_response_code(409);
                 echo json_encode(["status" => false, "message" => "Tên chi nhánh đã tồn tại!"]);
                 exit;
             }
