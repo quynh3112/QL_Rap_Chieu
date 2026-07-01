@@ -14,6 +14,7 @@
             if($data['action'] == 'login') {
                 // Kiểm tra dữ liệu rỗng
                 if (empty($data['email']) || empty($data['password'])) {
+                    http_response_code(400);
                     echo json_encode([
                         "status" => false,
                         "message" => "Vui lòng nhập đầy đủ thông tin đăng nhập."
@@ -26,12 +27,14 @@
                     unset($user['password']);
                     $_SESSION['user'] = $user;
 
+                    http_response_code(200);
                     echo json_encode([
                         "status" => true,
                         "message" => "Đăng nhập thành công!", 
                         "user" => $user
                     ]);
                 } else {
+                    http_response_code(401);
                     echo json_encode([
                         "status" => false,
                         "message" => "Sai email hoặc mật khẩu."
