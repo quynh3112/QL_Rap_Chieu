@@ -1,0 +1,476 @@
+
+let cart = [];
+const CHECKOUT_DRAFT_KEY = 'food_checkout_draft_v1';
+
+function getApiMessage(payload, fallbackMessage) {
+    if (!payload || typeof payload !== 'object') {
+        return fallbackMessage;
+    }
+
+    if (typeof payload.message === 'string' && payload.message.trim() !== '') {
+        return payload.message;
+    }
+
+    return fallbackMessage;
+}
+
+async function parseApiResponse(response) {
+    try {
+        return await response.json();
+    } catch (e) {
+        return null;
+    }
+}
+
+function formatCurrency(value) {
+    return `${new Intl.NumberFormat().format(Number(value) || 0)}đ`;
+}
+
+function saveCheckoutDraft(draft) {
+    sessionStorage.setItem(CHECKOUT_DRAFT_KEY, JSON.stringify(draft));
+}
+
+function loadCheckoutDraft() {
+    const raw = sessionStorage.getItem(CHECKOUT_DRAFT_KEY);
+    if (!raw) {
+        return null;
+    }
+
+    try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.items)) {
+            return null;
+        }
+        return parsed;
+    } catch (e) {
+        return null;
+    }
+}
+
+function clearCheckoutDraft() {
+    sessionStorage.removeItem(CHECKOUT_DRAFT_KEY);
+}
+
+function buildOrderPayloadFromDraft(draft) {
+    return {
+        phuongThuc: draft.phuongThuc,
+        items: draft.items.map(item => ({
+            foodId: item.foodId,
+            soLuong: item.soLuong
+        }))
+    };
+}
+
+function getCheckoutDraftFromCurrentCart() {
+    const methodSelect = document.getElementById('payment-method');
+    const phuongThuc = methodSelect ? methodSelect.value : '';
+    if (!phuongThuc) {
+        return { draft: null, error: 'Vui lòng chọn phương thức thanh toán.' };
+    }
+
+    const invalidItem = cart.find(item => {
+        const foodId = Number(item.foodId);
+        const soLuong = Number(item.soLuong);
+        const price = Number(item.price);
+
+        return (
+            !Number.isInteger(foodId) || foodId <= 0 ||
+            !Number.isInteger(soLuong) || soLuong <= 0 ||
+            !Number.isFinite(price) || price <= 0
+        );
+    });
+
+    if (invalidItem) {
+        return { draft: null, error: 'Giỏ hàng có món không hợp lệ. Vui lòng chọn lại.' };
+    }
+
+    const items = cart.map(item => ({
+        foodId: Number(item.foodId),
+        tenFood: item.tenFood,
+        price: Number(item.price),
+        soLuong: Number(item.soLuong)
+    }));
+
+    return {
+        draft: {
+            phuongThuc,
+            items
+        },
+        error: null
+    };
+}
+
+function setCheckoutMessage(message, type = 'info') {
+    const messageEl = document.getElementById('checkout-message');
+    if (!messageEl) {
+        return;
+    }
+
+    messageEl.textContent = message || '';
+    messageEl.className = `checkout-message ${type}`;
+}
+
+// 1. Lấy danh sách bắp nước từ Controller đổ ra HTML
+async function loadFoodUser() {
+    const container = document.getElementById('food-list');
+    if (!container) {
+        return;
+    }
+
+    try {
+        const res = await fetch('../../Controllers/foodController.php?action=list_all');
+        const json = await parseApiResponse(res);
+
+        if (!res.ok || !json || json.success !== true) {
+            const message = getApiMessage(json, 'Không thể tải danh sách món.');
+
+            if (res.status === 401) {
+                container.innerHTML = '<p class="food-loading">Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.</p>';
+                return;
+            }
+
+            throw new Error(message);
+        }
+
+        if (json.data.length === 0) {
+            container.innerHTML = '<p>Hiện tại không có món nào.</p>';
+            return;
+        }
+
+        container.innerHTML = json.data.map(f => {
+            const foodId = Number(f.foodId) || 0;
+            const stock = Number(f.soLuongTon) || 0;
+            const price = Number(f.gia) || 0;
+            const isAvailable = stock > 0 && price > 0;
+            const stockLabel = isAvailable ? `Còn lại: ${stock}` : 'Hết hàng';
+            const stockColor = isAvailable ? '#666' : '#e74c3c';
+            const buttonText = isAvailable ? 'CHỌN MUA' : 'HẾT HÀNG';
+            const buttonBg = isAvailable ? '#e71a0f' : '#555';
+            const buttonCursor = isAvailable ? 'pointer' : 'not-allowed';
+            const buttonOpacity = isAvailable ? '1' : '0.65';
+            const buttonDisabled = isAvailable ? '' : 'disabled';
+            const encodedName = encodeURIComponent(String(f.tenFood || ''));
+
+            return `
+                <div style="background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #333; text-align: center;">
+                    <h3 style="color: #fff; margin: 0 0 10px 0;">${f.tenFood}</h3>
+                    <p style="color: #f5c518; font-size: 1.2em; font-weight: bold;">${formatCurrency(price)}</p>
+                    <p style="color: ${stockColor}; font-size: 0.8em;">${stockLabel}</p>
+                    <button ${buttonDisabled}
+                            onclick="addToCart(${foodId}, decodeURIComponent('${encodedName}'), ${price}, ${stock})"
+                            style="background: ${buttonBg}; color: white; border: none; padding: 10px; width: 100%; cursor: ${buttonCursor}; opacity: ${buttonOpacity}; font-weight: bold; border-radius: 4px; margin-top: 10px;">
+                        ${buttonText}
+                    </button>
+                </div>
+            `;
+        }).join('');
+    } catch (e) {
+        console.error('Lỗi:', e);
+        container.innerHTML = `<p class="food-loading">${e.message || 'Không thể tải danh sách món.'}</p>`;
+    }
+}
+
+function addToCart(id, name, price, stock) {
+    const numericStock = Number(stock) || 0;
+    const numericPrice = Number(price) || 0;
+
+    if (numericStock <= 0) {
+        alert('Món này đã hết hàng.');
+        return;
+    }
+
+    if (numericPrice <= 0) {
+        alert('Món này chưa có giá hợp lệ nên chưa thể mua.');
+        return;
+    }
+
+    const item = cart.find(i => i.foodId === id);
+    if (item) {
+        if (item.soLuong < numericStock) {
+            item.soLuong++;
+        } else {
+            alert('Đã đạt giới hạn tồn kho của món này.');
+        }
+    } else {
+        cart.push({ foodId: id, tenFood: name, price: numericPrice, soLuong: 1 });
+    }
+
+    renderCart();
+}
+
+function renderCart() {
+    const content = document.getElementById('cart-content');
+    const totalEl = document.getElementById('cart-total');
+    if (!content || !totalEl) {
+        return;
+    }
+
+    if (cart.length === 0) {
+        content.innerHTML = '<p style="font-size: 14px; color: #555;">Giỏ hàng đang trống.</p>';
+        totalEl.innerText = '0đ';
+        return;
+    }
+
+    let total = 0;
+    content.innerHTML = cart.map((i, index) => {
+        total += i.price * i.soLuong;
+        return `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #222; padding-bottom: 8px;">
+                <div style="flex: 1;">
+                    <b style="font-size: 14px; color: #fff;">${i.tenFood}</b><br>
+                    <small style="color: #888;">${formatCurrency(i.price)} x ${i.soLuong}</small>
+                </div>
+                <div style="text-align: right;">
+                    <div style="color: #f5c518; font-weight: bold; margin-bottom: 5px;">
+                        ${formatCurrency(i.price * i.soLuong)}
+                    </div>
+                    <button onclick="removeFromCart(${index})" 
+                            style="background: none; border: 1px solid #444; color: #e71a0f; font-size: 10px; cursor: pointer; padding: 2px 6px; border-radius: 3px;">
+                        XÓA
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+
+    totalEl.innerText = formatCurrency(total);
+}
+
+// Nút thanh toán ở trang giỏ: chuyển sang trang checkout
+function placeOrder() {
+    if (cart.length === 0) {
+        alert('Giỏ hàng đang trống.');
+        return;
+    }
+
+    const checkoutResult = getCheckoutDraftFromCurrentCart();
+    if (checkoutResult.error) {
+        alert(checkoutResult.error);
+        return;
+    }
+
+    saveCheckoutDraft(checkoutResult.draft);
+    window.location.href = '../../View/pages/food_checkout.php';
+}
+
+// Hàm xóa món khỏi giỏ hàng
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    renderCart();
+}
+
+function restoreCartFromCheckoutDraftIfNeeded() {
+    const params = new URLSearchParams(window.location.search);
+    const shouldRestore = params.get('restoreCheckout') === '1';
+    if (!shouldRestore) {
+        return;
+    }
+
+    const draft = loadCheckoutDraft();
+    if (!draft || !Array.isArray(draft.items) || draft.items.length === 0) {
+        return;
+    }
+
+    cart = draft.items.map(item => ({
+        foodId: Number(item.foodId) || 0,
+        tenFood: item.tenFood || `Món #${item.foodId}`,
+        price: Number(item.price) || 0,
+        soLuong: Number(item.soLuong) || 0
+    })).filter(item => item.foodId > 0 && item.soLuong > 0 && item.price > 0);
+
+    const methodSelect = document.getElementById('payment-method');
+    if (methodSelect && draft.phuongThuc) {
+        methodSelect.value = draft.phuongThuc;
+    }
+
+    renderCart();
+}
+
+function renderCheckoutPreview(previewData) {
+    const itemsWrap = document.getElementById('checkout-food-items');
+    const foodTotalEl = document.getElementById('checkout-food-total');
+    const paymentTotalEl = document.getElementById('checkout-payment-total');
+
+    if (!itemsWrap || !foodTotalEl || !paymentTotalEl) {
+        return;
+    }
+
+    const items = previewData && Array.isArray(previewData.items) ? previewData.items : [];
+    if (items.length === 0) {
+        itemsWrap.innerHTML = '<p class="checkout-empty">Không có món nào trong giỏ hàng.</p>';
+    } else {
+        itemsWrap.innerHTML = items.map(item => `
+            <div class="checkout-item-row">
+                <div>
+                    <p class="checkout-item-name">${item.tenFood}</p>
+                    <p class="checkout-item-sub">${formatCurrency(item.gia)} x ${item.soLuong}</p>
+                </div>
+                <p class="checkout-item-total">${formatCurrency(item.thanhTien)}</p>
+            </div>
+        `).join('');
+    }
+
+    foodTotalEl.textContent = formatCurrency(previewData ? previewData.tongTienFood : 0);
+    paymentTotalEl.textContent = formatCurrency(previewData ? previewData.tongTienThanhToan : 0);
+}
+
+async function loadCheckoutPreview() {
+    const draft = loadCheckoutDraft();
+    if (!draft || !Array.isArray(draft.items) || draft.items.length === 0) {
+        setCheckoutMessage('Không tìm thấy dữ liệu thanh toán. Vui lòng quay lại giỏ hàng.', 'error');
+        const confirmBtn = document.getElementById('confirm-checkout-btn');
+        if (confirmBtn) {
+            confirmBtn.disabled = true;
+        }
+        renderCheckoutPreview(null);
+        return;
+    }
+
+    const payload = buildOrderPayloadFromDraft(draft);
+
+    try {
+        setCheckoutMessage('Đang cập nhật thông tin thanh toán...', 'info');
+        const response = await fetch('/QL_Rap_Chieu/Controllers/foodController.php?action=checkout_preview', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await parseApiResponse(response);
+        if (!response.ok || !result || result.success !== true) {
+            const message = getApiMessage(result, 'Không thể lấy thông tin thanh toán.');
+
+            if (response.status === 401) {
+                setCheckoutMessage('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.', 'error');
+                window.location.href = '../../View/pages/login.php';
+                return;
+            }
+
+            setCheckoutMessage(message, 'error');
+            renderCheckoutPreview(null);
+            return;
+        }
+
+        draft.phuongThuc = result.data.phuongThuc || draft.phuongThuc;
+        saveCheckoutDraft(draft);
+
+        const methodSelect = document.getElementById('checkout-method');
+        if (methodSelect && draft.phuongThuc) {
+            methodSelect.value = draft.phuongThuc;
+        }
+
+        renderCheckoutPreview(result.data);
+        setCheckoutMessage(getApiMessage(result, 'Thông tin thanh toán đã sẵn sàng.'), 'success');
+    } catch (error) {
+        console.error('Lỗi preview checkout:', error);
+        setCheckoutMessage('Không thể kết nối tới máy chủ. Vui lòng thử lại.', 'error');
+    }
+}
+
+async function submitCheckoutOrder() {
+    const draft = loadCheckoutDraft();
+    if (!draft || !Array.isArray(draft.items) || draft.items.length === 0) {
+        setCheckoutMessage('Không có dữ liệu thanh toán để xử lý.', 'error');
+        return;
+    }
+
+    const methodSelect = document.getElementById('checkout-method');
+    if (methodSelect) {
+        draft.phuongThuc = methodSelect.value;
+        saveCheckoutDraft(draft);
+    }
+
+    const confirmBtn = document.getElementById('confirm-checkout-btn');
+    if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'ĐANG XỬ LÝ...';
+    }
+
+    try {
+        const response = await fetch('../../Controllers/foodController.php?action=place_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(buildOrderPayloadFromDraft(draft))
+        });
+
+        const result = await parseApiResponse(response);
+        if (!response.ok || !result || result.success !== true) {
+            const errorMessage = getApiMessage(result, 'Thanh toán thất bại. Vui lòng thử lại.');
+
+            if (response.status === 401) {
+                setCheckoutMessage('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.', 'error');
+                window.location.href = '../../View/pages/login.php';
+                return;
+            }
+
+            setCheckoutMessage(errorMessage, 'error');
+            return;
+        }
+
+        const total = result.data ? result.data.tongTienThanhToan : null;
+        const paymentId = result.data ? result.data.paymentId : null;
+        let successMsg = getApiMessage(result, 'Đặt món thành công.');
+        if (paymentId) {
+            successMsg += ` Mã thanh toán: #${paymentId}.`;
+        }
+        if (total !== null && total !== undefined) {
+            successMsg += ` Tổng thanh toán: ${formatCurrency(total)}.`;
+        }
+
+        clearCheckoutDraft();
+        alert(successMsg);
+        window.location.href = '../../View/pages/home.php';
+    } catch (error) {
+        console.error('Lỗi checkout:', error);
+        setCheckoutMessage('Không thể kết nối tới máy chủ. Vui lòng thử lại.', 'error');
+    } finally {
+        if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'XÁC NHẬN THANH TOÁN';
+        }
+    }
+}
+
+function initializeFoodPage() {
+    restoreCartFromCheckoutDraftIfNeeded();
+    renderCart();
+    loadFoodUser();
+}
+
+function initializeCheckoutPage() {
+    const draft = loadCheckoutDraft();
+    const methodSelect = document.getElementById('checkout-method');
+    if (methodSelect && draft && draft.phuongThuc) {
+        methodSelect.value = draft.phuongThuc;
+    }
+
+    if (methodSelect) {
+        methodSelect.addEventListener('change', () => {
+            const changedDraft = loadCheckoutDraft();
+            if (!changedDraft) {
+                return;
+            }
+            changedDraft.phuongThuc = methodSelect.value;
+            saveCheckoutDraft(changedDraft);
+            loadCheckoutPreview();
+        });
+    }
+
+    loadCheckoutPreview();
+}
+
+window.onload = () => {
+    const isCheckoutPage = document.body && document.body.getAttribute('data-page') === 'food-checkout';
+    if (isCheckoutPage) {
+        initializeCheckoutPage();
+        return;
+    }
+
+    initializeFoodPage();
+};
