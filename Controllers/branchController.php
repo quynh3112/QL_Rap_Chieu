@@ -31,6 +31,8 @@ switch ($method) {
             $result = $branch->find($id);
 
             if ($result->num_rows <= 0) {
+http_response_code(400);
+
                 echo json_encode(["status" => false, "message" => "Không tìm thấy chi nhánh"]);
                 exit;
             }
@@ -112,12 +114,14 @@ switch ($method) {
         $thanhPho = $data['thanhPho'] ?? null;
 
         if (!$tenBranch || !$diaChi || !$thanhPho) {
+http_response_codess(400)
             echo json_encode(["status" => false, "message" => "Không được bỏ trống dữ liệu!"]);
             exit;
         }
 
         $check = $branch->check($tenBranch);
         if ($check->num_rows > 0) {
+http_response_code(400);
             echo json_encode(["status" => false, "message" => "Tên chi nhánh đã tồn tại!"]);
             exit;
         }
