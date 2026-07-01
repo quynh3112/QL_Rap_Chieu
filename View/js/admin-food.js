@@ -29,6 +29,7 @@ async function loadAdminData() {
 //2. load danh sách đơn hàng
 async function loadOrders() {
     try {
+<<<<<<< HEAD
         const res = await fetch('../../Controllers/foodController.php?action=list_orders');
         const json = await res.json();
         const container = document.getElementById('order-table-container');
@@ -63,6 +64,101 @@ async function loadOrders() {
     } catch (e) { console.error("Lỗi load đơn hàng:", e); }
 }
 
+=======
+        const res = await fetch('../../Controllers/paymentController.php?action=list_pending');
+        const json = await res.json();
+        const container = document.getElementById('order-table-container');
+        
+        if (!json.success) {
+            container.innerHTML = `<p style="text-align:center; padding:50px; color:#e74c3c;">${json.message || 'Không thể tải danh sách thanh toán.'}</p>`;
+            return;
+        }
+
+        const payload = json.data || {};
+        const payments = Array.isArray(payload.payments) ? payload.payments : [];
+        const currentRole = payload.currentRole || window.currentUserRole || '';
+        const canReview = currentRole === 'Admin' || currentRole === 'Manager';
+
+        if (payments.length === 0) {
+            container.innerHTML = '<p style="text-align:center; padding:50px; color:#666;">Không có thanh toán chờ xác nhận.</p>';
+            return;
+        }
+
+        container.innerHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã TT</th>
+                        <th>Khách Hàng</th>
+                        <th>Mã Đồ Ăn</th>
+                        <th>Mã Booking</th>
+                        <th>Phương Thức</th>
+                        <th>Tổng Tiền</th>
+                        <th>TT Thanh Toán</th>
+                        <th>TT Đồ Ăn</th>
+                        <th>TT Booking</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${payments.map(o => `
+                        <tr>
+                            <td>#${o.paymentId}</td>
+                            <td>${o.customerName || 'Không rõ'}</td>
+                            <td>${o.foodOrderId ? '#' + o.foodOrderId : '-'}</td>
+                            <td>${o.bookingId ? '#' + o.bookingId : '-'}</td>
+                            <td>${o.phuongThuc || '-'}</td>
+                            <td style="color:gold; font-weight:bold;">${new Intl.NumberFormat().format(o.tongTien || 0)}đ</td>
+                            <td style="color:#f5c518;">${o.paymentStatus || '-'}</td>
+                            <td style="color:cyan;">${o.foodOrderStatus || '-'}</td>
+                            <td style="color:#9b59b6;">${o.bookingStatus || '-'}</td>
+                            <td>
+                                ${o.paymentStatus === 'Chờ xác nhận' && canReview ? `
+                                    <button onclick="approvePayment(${o.paymentId})" style="color:#2ecc71; background:none; border:1px solid #2ecc71; cursor:pointer; padding:2px 6px; margin-right:5px;">Duyệt</button>
+                                    <button onclick="cancelPayment(${o.paymentId})" style="color:#e74c3c; background:none; border:1px solid #e74c3c; cursor:pointer; padding:2px 6px;">Hủy</button>
+                                ` : '<span style="color:#888;">-</span>'}
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    } catch (e) { console.error("Lỗi load đơn hàng:", e); }
+}
+
+async function approvePayment(paymentId) {
+    await submitPaymentAction('approve', paymentId, 'duyệt');
+}
+
+async function cancelPayment(paymentId) {
+    await submitPaymentAction('cancel', paymentId, 'hủy');
+}
+
+async function submitPaymentAction(action, paymentId, actionText) {
+    if (!confirm(`Bạn có chắc muốn ${actionText} thanh toán #${paymentId}?`)) {
+        return;
+    }
+
+    try {
+        const res = await fetch(`../../Controllers/paymentController.php?action=${action}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId })
+        });
+
+        const result = await res.json();
+        alert(result.message || (result.success ? 'Thao tác thành công.' : 'Thao tác thất bại.'));
+
+        if (result.success) {
+            loadOrders();
+        }
+    } catch (e) {
+        console.error('Lỗi cập nhật trạng thái thanh toán:', e);
+        alert('Không thể kết nối đến server để cập nhật trạng thái thanh toán.');
+    }
+}
+
+>>>>>>> origin/dev-food
 // 3. chuyển tab
 function switchTab(tab) {
     // ẩn/ hiện Section

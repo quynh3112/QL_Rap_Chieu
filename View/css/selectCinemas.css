@@ -1,6 +1,11 @@
 .line{
+<<<<<<< HEAD
     width: 1px;
     height: 70%px;
+=======
+    width: 70%;
+    height: 1px;
+>>>>>>> origin/dev-food
     background-color: gray;
 }
 .city{
@@ -8,9 +13,23 @@
     flex-wrap: wrap;
 
 }
+<<<<<<< HEAD
 
 
 
+=======
+p{
+    width: 120px;
+    padding: 10px;
+    background:gray;
+    text-align: center;
+    border: 1px solid #ccc;
+    color: white;
+}
+p:hover{
+    background-color:#EB4638
+}
+>>>>>>> origin/dev-food
 .films{
     display: grid;
     grid-template-columns: repeat(auto-fill,300px);
@@ -40,6 +59,7 @@
 }
 .item:hover{
     transform: scale(1.05);
+<<<<<<< HEAD
 }
 .tp.active {
     color: #EB4638;
@@ -72,3 +92,6 @@ color:orange;
 .films{
     margin: 30px;
 }
+=======
+}
+>>>>>>> origin/dev-food

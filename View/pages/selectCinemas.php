@@ -11,9 +11,15 @@
          <?php
             include "../component/header.php"
             ?>
+<<<<<<< HEAD
         <div style="margin-top:70px" class="">
            
             <div class="select" >
+=======
+        <div style="margin-top:70px">
+           
+            <div>
+>>>>>>> origin/dev-food
                 <div id="city">
                     <h1>CGV CINEMAS</h1>
                     <div class="line"></div>
@@ -23,9 +29,13 @@
                 <div id="branches"></div>
             </div>
             <div>
+<<<<<<< HEAD
                
                 <div id="items" class="films">
                   
+=======
+                <div id="items" class="films">
+>>>>>>> origin/dev-food
                    
                 </div>
             
