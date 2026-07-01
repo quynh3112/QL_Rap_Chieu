@@ -112,6 +112,7 @@ switch ($method) {
         $thanhPho = $data['thanhPho'] ?? null;
 
         if (!$tenBranch || !$diaChi || !$thanhPho) {
+http_response_codess(400)
             echo json_encode(["status" => false, "message" => "Không được bỏ trống dữ liệu!"]);
             exit;
         }
